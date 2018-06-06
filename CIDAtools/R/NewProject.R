@@ -49,28 +49,28 @@ proj_setup <- function(path, ...){
   # write to readme file
   writeLines(paste0(readme, collapse = '\n'),
              con = file.path(path, "ReadMe.md"))
-  
+
   readme <- list()
 
-  readme$Admin <- c("# Admin  ", 
-                    "", 
-                    "This folder contains the scope of work and other relevant files from CIDA admin.  ", 
-                    "", 
-                    "Details about the files:  ", 
-                    "", 
-                    "File | Description", 
-                    "---|---------------------------------------------------------------------", 
-                    "", 
+  readme$Admin <- c("# Admin  ",
+                    "",
+                    "This folder contains the scope of work and other relevant files from CIDA admin.  ",
+                    "",
+                    "Details about the files:  ",
+                    "",
+                    "File | Description",
+                    "---|---------------------------------------------------------------------",
+                    "",
                     "")
-  readme$Background <- c("# Background  ", 
+  readme$Background <- c("# Background  ",
                          "  ",
-                         "This folder contains documents provided by investigators and the data analysis ", 
-                         "plan.  ", 
-                         "  ", 
-                         "Details about the files:  ", 
+                         "This folder contains documents provided by investigators and the data analysis ",
+                         "plan.  ",
                          "  ",
-                         "File | Description", 
-                         "---|---------------------------------------------------------------------", 
+                         "Details about the files:  ",
+                         "  ",
+                         "File | Description",
+                         "---|---------------------------------------------------------------------",
                          "  ")
   dir.create(paste0(path, '/Admin'), recursive = TRUE, showWarnings = FALSE)
   writeLines(paste0(readme$Admin, collapse = '\n'),
@@ -81,7 +81,7 @@ proj_setup <- function(path, ...){
 
   # create a meta file for project info
   if(meta){
-    dir.create(paste0(path, '/.ProjData/'))
+    dir.create(paste0(path, '/.ProjData'))
     ProjData <- list(ProjectName = ProjectName, PI = PI, analyst = analyst)
     write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   }

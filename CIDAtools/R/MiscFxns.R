@@ -1,7 +1,9 @@
 #' Set Default Analyst Value
 #'
 #'
-#' This function allows you to set the option CIDAtools.analyst and will simultanesouly change the default in New Cida Project Template.
+#' This function allows you to set the option CIDAtools.analyst permanently
+#' (until you change it or reinstall CIDAtools) and will
+#' simultanesouly change the default in New Cida Project Template.
 #'
 #' @param AnalystName A string containing the analyst name
 #' @return A message stating the name has been changed.
@@ -15,16 +17,8 @@ setAnalyst <- function(AnalystName){
     warning('Only First String is Used')
     AnalystName <- AnalystName[1]
   }
-  options(CIDAtools.analyst = AnalystName)
-  site_path = R.home(component = "home")
-  site_path = R.home(component = "home")
-  fname = file.path(site_path, "etc", "Rprofile.site")
-  opts <- readLines(fname)
-  opts <- gsub("CIDAtools.analyst = .+)",
-                 paste0("CIDAtools.analyst = '",
-                        paste0(AnalystName), "')"),
-               opts)
-    writeLines(opts, fname)
+  setPermanentAnalyst(AnalystName)
+  options(CIDAtools.analyst = 'Default Analyst Name')
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')

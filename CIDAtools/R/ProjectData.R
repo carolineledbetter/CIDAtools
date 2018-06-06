@@ -15,9 +15,8 @@ SetProjectAnalyst <- function(AnalystName){
   }
   if(file.exists(file.path('.ProjData/Data.dcf'))){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  }
-  else{
-    dir.create(paste0('.ProjData/'))
+  } else{
+    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = F)
     ProjData <- list()
     }
   ProjData$analyst <- AnalystName
@@ -42,11 +41,10 @@ SetProjectName <- function(ProjectName){
   }
   if(file.exists(file.path('.ProjData/Data.dcf'))){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  }
-  else{
-    dir.create(paste0('.ProjData/'))
+  } else{
+    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = F)
     ProjData <- list()
-  }
+    }
   ProjData$ProjectName <- ProjectName
   write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
   return(paste('The Project name has been changed to', ProjectName))
@@ -69,11 +67,10 @@ SetProjectPI <- function(PI){
   }
   if(file.exists(file.path('.ProjData/Data.dcf'))){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  }
-  else{
-    dir.create(paste0('.ProjData/'))
+  } else{
+    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = FALSE)
     ProjData <- list()
-  }
+    }
   ProjData$PI <- PI
   write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
   return(paste('The Project PI has been changed to', PI))
