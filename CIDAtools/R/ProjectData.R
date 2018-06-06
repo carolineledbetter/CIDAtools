@@ -112,7 +112,7 @@ ProjectAnalyst <- function(){
 ProjectName <- function(){
   if(file.exists(file.path('.ProjData/Data.dcf'))){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-    if('ProjectName' %in% names(ProjData)) return(ProjData$analyst)
+    if('ProjectName' %in% names(ProjData)) return(ProjData$ProjectName)
   }
   return('')
 }
@@ -129,7 +129,7 @@ ProjectName <- function(){
 ProjectPI <- function(){
   if(file.exists(file.path('.ProjData/Data.dcf'))){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-    if('PI' %in% names(ProjData)) return(ProjData$analyst)
+    if('PI' %in% names(ProjData)) return(ProjData$PI)
   }
   return('')
 }
