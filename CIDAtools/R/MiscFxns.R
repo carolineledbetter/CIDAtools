@@ -17,14 +17,23 @@ setAnalyst <- function(AnalystName){
   }
   options(CIDAtools.analyst = AnalystName)
   site_path = R.home(component = "home")
+  site_path = R.home(component = "home")
+  fname = file.path(site_path, "etc", "Rprofile.site")
+  opts <- readLines(fname)
+  opts <- gsub("CIDAtools.analyst = .+)",
+                 paste0("CIDAtools.analyst = '",
+                        paste0(AnalystName), "')"),
+               opts)
+    writeLines(opts, fname)
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')
   DCF <- read.dcf(file.path(Project_setup), all = T)
-  DCF$Default[DCF$Parameter == 'analyst' & 
+  DCF$Default[DCF$Parameter == 'analyst' &
                 !is.na(DCF$Parameter)] <- AnalystName
   write.dcf(DCF, file.path(Project_setup))
-  return(paste('The default analyst name has been changed to', AnalystName))
+  return(paste('The default analyst name has been changed to',
+               getOption('CIDAtools.analyst')))
 }
 
 #' Get pretty numbers of rows

@@ -1,5 +1,5 @@
 #' Set Project Analyst
-#' 
+#'
 #' This function allows you to set the  project analyst. This will overwrite the current value if exists.
 #'
 #' @param AnalystName A string containing the analyst name
@@ -21,12 +21,12 @@ SetProjectAnalyst <- function(AnalystName){
     ProjData <- list()
     }
   ProjData$analyst <- AnalystName
-  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
   return(paste('The Project Analyst name has been changed to', AnalystName))
 }
 
 #' Set Project Name
-#' 
+#'
 #' This function allows you to set the  project name. This will overwrite the current value if exists.
 #'
 #' @param ProjectName A string containing the analyst name
@@ -48,12 +48,12 @@ SetProjectName <- function(ProjectName){
     ProjData <- list()
   }
   ProjData$ProjectName <- ProjectName
-  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
   return(paste('The Project name has been changed to', ProjectName))
 }
 
 #' Set PI Name
-#' 
+#'
 #' This function allows you to set the Project's PI. This will overwrite the current value if exists.
 #'
 #' @param PI A string containing the analyst name
@@ -75,12 +75,12 @@ SetProjectPI <- function(PI){
     ProjData <- list()
   }
   ProjData$PI <- PI
-  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
   return(paste('The Project PI has been changed to', PI))
 }
 
 #' Get Project Analyst
-#' 
+#'
 #' This function returns the Project Analyst Name. If none exists, it
 #' will return the value of CIDAtools.analyst option or blank if the option is not set.
 #'
@@ -101,7 +101,7 @@ ProjectAnalyst <- function(){
 }
 
 #' Get Project Name
-#' 
+#'
 #' This function returns the Project Name or blank if none exists.
 #'
 #' @return A character string with the project name
@@ -118,7 +118,7 @@ ProjectName <- function(){
 }
 
 #' Get PI Name
-#' 
+#'
 #' This function returns the PI Name or blank if none exists.
 #'
 #' @return A character string with the PI name
