@@ -10,6 +10,11 @@
 #'
 
 setAnalyst <- function(AnalystName){
+  if(!is.character(AnalystName)) stop('Analyst Name must be a character string')
+  if(length(AnalystName) > 1) {
+    warning('Only First String is Used')
+    AnalystName <- AnalystName[1]
+  }
   options(CIDAtools.analyst = AnalystName)
   site_path = R.home(component = "home")
   Project_setup <- paste0(site_path,

@@ -20,6 +20,12 @@ Label: Initialize Git Repo?
 Default: On
 Position: Left
 
+Parameter: rem_origin
+Widget: TextInput
+Label: Optional: Set Remote Origin
+Default: 
+Position: Right
+
 Parameter: git_lfs
 Widget:CheckboxInput
 Label: Git LFS for Data?

@@ -10,7 +10,7 @@ ProjectName()
 A character string with the project name
 }
 \description{
-This function returns te Project Name or blank if none exists.
+This function returns the Project Name or blank if none exists.
 }
 \keyword{ProjData}
 \keyword{ProjectName}

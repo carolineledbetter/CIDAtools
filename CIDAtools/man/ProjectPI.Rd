@@ -10,7 +10,7 @@ ProjectPI()
 A character string with the PI name
 }
 \description{
-This function returns te PI Name or blank if none exists.
+This function returns the PI Name or blank if none exists.
 }
 \keyword{PI}
 \keyword{ProjData}
