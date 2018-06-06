@@ -47,7 +47,7 @@ SetProjectName <- function(ProjectName){
     dir.create(paste0('.ProjData/'))
     ProjData <- list()
   }
-  ProjData$analyst <- ProjectName
+  ProjData$ProjectName <- ProjectName
   write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   return(paste('The Project name has been changed to', ProjectName))
 }
@@ -74,7 +74,7 @@ SetProjectPI <- function(PI){
     dir.create(paste0('.ProjData/'))
     ProjData <- list()
   }
-  ProjData$analyst <- PI
+  ProjData$PI <- PI
   write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   return(paste('The Project PI has been changed to', PI))
 }
