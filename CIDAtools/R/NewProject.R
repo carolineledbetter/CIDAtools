@@ -49,20 +49,35 @@ proj_setup <- function(path, ...){
   # write to readme file
   writeLines(paste0(readme, collapse = '\n'),
              con = file.path(path, "ReadMe.md"))
+  
+  readme <- list()
 
-  readme <- c("# Admin  ",
-              "",
-              "This folder contains the scope of work and other relevant files from CIDA admin.  ",
-              "",
-              "Details about the files:  ",
-              "",
-              "File | Description",
-              "---|---------------------------------------------------------------------",
-              "",
-              "")
+  readme$Admin <- c("# Admin  ", 
+                    "", 
+                    "This folder contains the scope of work and other relevant files from CIDA admin.  ", 
+                    "", 
+                    "Details about the files:  ", 
+                    "", 
+                    "File | Description", 
+                    "---|---------------------------------------------------------------------", 
+                    "", 
+                    "")
+  readme$Background <- c("# Background  ", 
+                         "  ",
+                         "This folder contains documents provided by investigators and the data analysis ", 
+                         "plan.  ", 
+                         "  ", 
+                         "Details about the files:  ", 
+                         "  ",
+                         "File | Description", 
+                         "---|---------------------------------------------------------------------", 
+                         "  ")
   dir.create(paste0(path, '/Admin'), recursive = TRUE, showWarnings = FALSE)
-  writeLines(paste0(readme, collapse = '\n'),
+  writeLines(paste0(readme$Admin, collapse = '\n'),
              con = file.path(path, "Admin/ReadMe.md"))
+  dir.create(paste0(path, '/Background'), recursive = TRUE, showWarnings = FALSE)
+  writeLines(paste0(readme$Background, collapse = '\n'),
+             con = file.path(path, "Background/ReadMe.md"))
 
   # create a meta file for project info
   if(meta){
