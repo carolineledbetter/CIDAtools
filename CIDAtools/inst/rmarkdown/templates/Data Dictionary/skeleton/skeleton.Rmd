@@ -1,0 +1,75 @@
+---
+geometry: margin=0.6in
+output:
+  html_document:
+    df_print: paged
+  pdf_document:
+    fig_caption: yes
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = '../')
+```
+**DATA DICTIONARY**  
+**Project:**  
+**PI:**  
+**Prepared By:** Caroline Ledbetter  
+**Date:** `r paste(format(Sys.Date(), '%m/%d/%Y'))`  
+```{r setup, include=FALSE}
+# set your data
+load(file = 'DataRaw/All.RData')
+library(pander)
+```
+
+```{r makedic}
+# set maximum number of values to list
+mVal <- 25
+
+# function to get values
+values <- function(variable){
+  if(is.character(variable)){
+    fxrs <- levels(as.factor(variable))
+  }
+  else fxrs <- levels(variable)
+  if(length(fxrs) > mVal) fxrs <- NULL
+  return(fxrs)
+}
+
+# function to make data dictionary
+makedic <- function(dfname){
+  df <- get(dfname)
+  Values <- lapply(df, values)
+  Values <- sapply(Values, paste0, collapse = ' \\\n ')
+  Type <- sapply(df, class)
+  # POSIXt classes will have 2 classes need to remove one and 
+  # set to date
+  Type <- lapply(Type, sub, pattern = 'POSIXt', replacement = "Date")
+  Type <- sapply(Type, grep, pattern = 'POSI', value = T, invert = T)
+  dic <- data.frame(Variables = names(df), Type, 
+                    Values = Values, 
+                    stringsAsFactors = F, row.names = NULL)
+  dic <- data.frame(Variables = names(df), Type = Type, 
+                    Values = Values, 
+                    stringsAsFactors = F, row.names = NULL)
+  return(dic)
+}
+
+dataframes <- ls()[sapply(ls(), function(x) is.data.frame(get(x)))]
+printtbl <- function(dfname){
+  set.alignment('left')
+  pander(makedic(dfname), caption = dfname)
+  return()
+}
+
+``` 
+
+
+```{r tables, results = 'asis'}
+panderOptions('knitr.auto.asis', FALSE)
+panderOptions('keep.line.breaks', TRUE)
+# panderOptions('table.split.cells', Inf)
+# panderOptions('table.split.table', Inf)
+invisible(sapply(dataframes, printtbl))
+
+```

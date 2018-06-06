@@ -1,0 +1,15 @@
+Binding: proj_setup
+Title: New CIDA Project
+OpenFiles: ReadMe.md
+
+Parameter: PI
+Widget: TextInput
+Label: Principal Investigator
+Default: 
+Position: Left
+
+Parameter: analyst
+Widget: TextInput
+Label: Analyst
+Default: Caroline Ledbetter
+Position: Right
