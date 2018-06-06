@@ -14,7 +14,8 @@ proj_setup <- function(path, ...){
   }
 
   if(git_init){
-    git2r::init(path)
+    repo<- git2r::init(path)
+    if(rem_origin != '') git2r::remote_set_url(repo, 'origin', rem_origin)
   }
 
   if(nodata){

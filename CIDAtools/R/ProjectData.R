@@ -8,7 +8,7 @@
 #' @export
 #'
 SetProjectAnalyst <- function(AnalystName){
-  if(!is.character(AnalystName)) stop('Analyst Name but me a character string')
+  if(!is.character(AnalystName)) stop('Analyst Name must be a character string')
   if(length(AnalystName) > 1) {
     warning('Only First String is Used')
     AnalystName <- AnalystName[1]
@@ -17,12 +17,66 @@ SetProjectAnalyst <- function(AnalystName){
     ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
   }
   else{
-    dir.create(paste0(path, '/.ProjData/'))
+    dir.create(paste0('.ProjData/'))
     ProjData <- list()
     }
   ProjData$analyst <- AnalystName
   write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   return(paste('The Project Analyst name has been changed to', AnalystName))
+}
+
+#' Set Project Name
+#' 
+#' This function allows you to set the  project name. This will overwrite the current value if exists.
+#'
+#' @param ProjectName A string containing the analyst name
+#' @return A message stating the name has been changed.
+#' @keywords options ProjectName ProjData
+#' @export
+#'
+SetProjectName <- function(ProjectName){
+  if(!is.character(ProjectName)) stop('Project Name must be a character string')
+  if(length(ProjectName) > 1) {
+    warning('Only First String is Used')
+    ProjectName <- ProjectName[1]
+  }
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+  }
+  else{
+    dir.create(paste0('.ProjData/'))
+    ProjData <- list()
+  }
+  ProjData$analyst <- ProjectName
+  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  return(paste('The Project name has been changed to', ProjectName))
+}
+
+#' Set PI Name
+#' 
+#' This function allows you to set the Project's PI. This will overwrite the current value if exists.
+#'
+#' @param PI A string containing the analyst name
+#' @return A message stating the name has been changed.
+#' @keywords options PI ProjData
+#' @export
+#'
+SetProjectPI <- function(PI){
+  if(!is.character(PI)) stop('PI Name must be a character string')
+  if(length(PI) > 1) {
+    warning('Only First String is Used')
+    PI <- PI[1]
+  }
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+  }
+  else{
+    dir.create(paste0('.ProjData/'))
+    ProjData <- list()
+  }
+  ProjData$analyst <- PI
+  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  return(paste('The Project PI has been changed to', PI))
 }
 
 #' Get Project Analyst
@@ -48,7 +102,7 @@ ProjectAnalyst <- function(){
 
 #' Get Project Name
 #' 
-#' This function returns te Project Name or blank if none exists.
+#' This function returns the Project Name or blank if none exists.
 #'
 #' @return A character string with the project name
 #' @keywords options ProjData ProjectName
@@ -65,7 +119,7 @@ ProjectName <- function(){
 
 #' Get PI Name
 #' 
-#' This function returns te PI Name or blank if none exists.
+#' This function returns the PI Name or blank if none exists.
 #'
 #' @return A character string with the PI name
 #' @keywords options ProjData PI
