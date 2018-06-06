@@ -1,0 +1,81 @@
+#' Set Project Analyst
+#' 
+#' This function allows you to set the  project analyst. This will overwrite the current value if exists.
+#'
+#' @param AnalystName A string containing the analyst name
+#' @return A message stating the name has been changed.
+#' @keywords options Analyst ProjData
+#' @export
+#'
+SetProjectAnalyst <- function(AnalystName){
+  if(!is.character(AnalystName)) stop('Analyst Name but me a character string')
+  if(length(AnalystName) > 1) {
+    warning('Only First String is Used')
+    AnalystName <- AnalystName[1]
+  }
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+  }
+  else{
+    dir.create(paste0(path, '/.ProjData/'))
+    ProjData <- list()
+    }
+  ProjData$analyst <- AnalystName
+  write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
+  return(paste('The Project Analyst name has been changed to', AnalystName))
+}
+
+#' Get Project Analyst
+#' 
+#' This function returns the Project Analyst Name. If none exists, it
+#' will return the value of CIDAtools.analyst option or blank if the option is not set.
+#'
+#' @return A character string with the analyst name
+#' @keywords options Analyst ProjData
+#' @export
+#'
+
+ProjectAnalyst <- function(){
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+    if('analyst' %in% names(ProjData)) return(ProjData$analyst)
+  }
+  if(!is.null(getOption('CIDAtools.analyst'))){
+    return(getOption('CIDAtools.analyst'))
+  }
+  return('')
+}
+
+#' Get Project Name
+#' 
+#' This function returns te Project Name or blank if none exists.
+#'
+#' @return A character string with the project name
+#' @keywords options ProjData ProjectName
+#' @export
+#'
+
+ProjectName <- function(){
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+    if('ProjectName' %in% names(ProjData)) return(ProjData$analyst)
+  }
+  return('')
+}
+
+#' Get PI Name
+#' 
+#' This function returns te PI Name or blank if none exists.
+#'
+#' @return A character string with the PI name
+#' @keywords options ProjData PI
+#' @export
+#'
+
+ProjectPI <- function(){
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+    if('PI' %in% names(ProjData)) return(ProjData$analyst)
+  }
+  return('')
+}

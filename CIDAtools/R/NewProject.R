@@ -66,8 +66,7 @@ proj_setup <- function(path, ...){
   # create a meta file for project info
   if(meta){
     dir.create(paste0(path, '/.ProjData/'))
-    ProjData <- list(ProjectName, PI, analyst)
-    names(ProjData) <- list('ProjectName', 'PI', 'analyst')
+    ProjData <- list(ProjectName = ProjectName, PI = PI, analyst = analyst)
     write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   }
 detach(dots)

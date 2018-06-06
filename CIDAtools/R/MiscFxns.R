@@ -15,9 +15,9 @@ setAnalyst <- function(AnalystName){
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')
-  read.dcf(file.path(Project_setup)) -> DCF
-  pos <- grep('Analyst', DCF) + nrow(DCF)
-  DCF[pos] <- AnalystName
+  DCF <- read.dcf(file.path(Project_setup), all = T)
+  DCF$Default[DCF$Parameter == 'analyst' & 
+                !is.na(DCF$Parameter)] <- AnalystName
   write.dcf(DCF, file.path(Project_setup))
   return(paste('The default analyst name has been changed to', AnalystName))
 }
