@@ -174,16 +174,17 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
   contvars <- rowvars[vartypes == F]
   contvars <- contvars[order(contvars %in% MedIQR)]
   continuous_labels <- contvars
+  if(emphasis == 'b') {
+    continuous_labels <- paste0('**', continuous_labels, '**')
+  }
+  names(continuous_labels) <- contvars
   if(!length(MedIQR) == length(contvars) & !is.null(MedIQR)){
     y <- min(which(contvars %in% MedIQR))
-    continuous_labels <- c(contvars[1:(y-1)], ' ',
-                           contvars[y:length(contvars)])
+    continuous_labels <- c(continuous_labels[1:(y-1)],
+                           blank = ' ',
+                           continuous_labels[y:length(contvars)])
   }
- if(emphasis == 'b') {
-    continuous_labels <- paste0('**', continuous_labels, '**')
- }
-  continuous_labels <- lapply(continuous_labels, list)
-  names(continuous_labels) <- contvars
+
   # if missing are included add a line for the missing count
   if(incl_missing == T & length(contvars) != 0) {
     continuous_labels <- unlist(sapply(contvars, function(x){
