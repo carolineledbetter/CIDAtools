@@ -1,27 +1,3 @@
-#' Set Default Analyst Value
-#'
-#'
-#' This function allows you to set the option CIDAtools.analyst and will simultanesouly change the default in New Cida Project Template.
-#'
-#' @param AnalystName A string containing the analyst name
-#' @return A message stating the name has been changed.
-#' @keywords options Analyst
-#' @export
-#'
-
-setAnalyst <- function(AnalystName){
-  options(CIDAtools.analyst = AnalystName)
-  Project_setup <- paste0('/Library/Frameworks/R.framework/Versions/',
-                          'Current/Resources/library/CIDAtools/rstudio/',
-                          'templates/project/proj_setup.dcf')
-  read.dcf(file.path(Project_setup)) -> DCF
-  pos <- grep('Analyst', DCF) + nrow(DCF)
-  DCF[pos] <- AnalystName
-  write.dcf(DCF, file.path(Project_setup))
-  return(paste('The default analyst name has been changed to', AnalystName))
-}
-
-
 proj_setup <- function(path, ...){
   # ensure path exists
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
@@ -30,8 +6,8 @@ proj_setup <- function(path, ...){
   ProjectName <- paste0(path)
 
   if(git_lfs){
-  LFS_text <- paste0(c("DataRaw/* filter=lfs diff=lfs merge=lfs -text",
-                       "DataProcessed/* filter=lfs diff=lfs merge=lfs -text"),
+  LFS_text <- paste0(c("DataRaw/* -X DataRaw/ReadMe.md  filter=lfs diff=lfs merge=lfs -text",
+                      " DataProcessed/*  -X DataProcessed/ReadMe.mdfilter=lfs diff=lfs merge=lfs -text"),
                      collapse = '\n')
   writeLines(LFS_text,
              con = file.path(path, ".gitattributes"))
@@ -42,9 +18,13 @@ proj_setup <- function(path, ...){
   }
 
   if(nodata){
-    gitignore <- paste0(c('*.RD*', '*.csv',
-                          '.xls*', '*.txt', 'Data*',
-                          '*.dat'), collapse = '\n')
+    gitignore <- paste0(c("# Session Data files",".RData",
+                          "# R Data files","*.RData","*.rda","*.rdata","*.rda",
+                          "*.csv","*.txt","*.dat",
+                          "*.xls*",
+                          "*.sas7bdat","*.xport",
+                          "*.mdb",
+                          "DataRaw/","DataProcessed/"), collapse = '\n')
     writeLines(gitignore, con = file.path(path, '.gitignore'))
   }
 
@@ -68,6 +48,20 @@ proj_setup <- function(path, ...){
   # write to readme file
   writeLines(paste0(readme, collapse = '\n'),
              con = file.path(path, "ReadMe.md"))
+
+  readme <- c("# Admin  ",
+              "",
+              "This folder contains the scope of work and other relevant files from CIDA admin.  ",
+              "",
+              "Details about the files:  ",
+              "",
+              "File | Description",
+              "---|---------------------------------------------------------------------",
+              "",
+              "")
+  dir.create(paste0(path, '/Admin'), recursive = TRUE, showWarnings = FALSE)
+  writeLines(paste0(readme, collapse = '\n'),
+             con = file.path(path, "Admin/ReadMe.md"))
 
   # create a meta file for project info
   if(meta){
