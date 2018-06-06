@@ -174,7 +174,6 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
   contvars <- rowvars[vartypes == F]
   contvars <- contvars[order(contvars %in% MedIQR)]
   continuous_labels <- contvars
-  y <- 0
   if(!length(MedIQR) == length(contvars) & !is.null(MedIQR)){
     y <- min(which(contvars %in% MedIQR))
     continuous_labels <- c(contvars[1:(y-1)], ' ',
@@ -182,24 +181,20 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
   }
  if(emphasis == 'b') {
     continuous_labels <- paste0('**', continuous_labels, '**')
-  }
-
+ }
+  continuous_labels <- lapply(continuous_labels, list)
+  names(continuous_labels) <- contvars
   # if missing are included add a line for the missing count
   if(incl_missing == T & length(contvars) != 0) {
-    continuous_labels  <- unlist(
-      sapply(1:length(contvars), function(x){
-        if (sum(is.na(data[,contvars[x]])) >0){
-          if(x >= y) x <- x+1
-          emp <- ''
-          # add slashes for indent if set
-          if (emphasis == 's') emp <- '\\ '
-          return(list(continuous_labels[x],
-                      paste0(emp, 'Missing N(%)')))
-        }
-        return(continuous_labels[x])
-      }))
+    continuous_labels <- unlist(sapply(contvars, function(x){
+      miss <- any(is.na(data[, x]))
+      emp <- NULL
+      if(miss) emp <- 'Missing(N%)'
+      # add slashes for indent if set
+      if (emphasis == 's') emp <- '\\ Missing(N%)'
+      return(c(continuous_labels[x], emp))
+    }))
   }
-
 
   # put together all rownames
   rnames <- unlist(c(" ", binarylabs, nonbinlab," ",continuous_labels))
