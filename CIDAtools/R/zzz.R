@@ -3,8 +3,7 @@
   if(is.null(defaultAnalyst)){
     defaultAnalyst <- 'Default Analyst Name'
   }
-  setPermanentAnalyst(defaultAnalyst)
-  invisible()
+  invisible(setPermanentAnalyst(defaultAnalyst))
 }
 
 

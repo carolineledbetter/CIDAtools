@@ -19,6 +19,7 @@ setAnalyst <- function(AnalystName){
   }
   setPermanentAnalyst(AnalystName)
   options(CIDAtools.analyst = 'Default Analyst Name')
+  site_path = R.home(component = "home")
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')
