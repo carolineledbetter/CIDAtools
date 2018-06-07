@@ -72,6 +72,15 @@ proj_setup <- function(path, ...){
                          "File | Description",
                          "---|---------------------------------------------------------------------",
                          "  ")
+  readme$DataProcessed <- c("# Processed Data  ",
+                            "",
+                            "Scripts that created the files in this folder:  ",
+                            "",
+                            "File | Script",
+                            "---|---------------------------------------------------------------------",
+                            "")
+
+
   dir.create(paste0(path, '/Admin'), recursive = TRUE, showWarnings = FALSE)
   writeLines(paste0(readme$Admin, collapse = '\n'),
              con = file.path(path, "Admin/ReadMe.md"))

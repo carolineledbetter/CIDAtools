@@ -20,7 +20,7 @@ SetProjectAnalyst <- function(AnalystName){
     ProjData <- list()
     }
   ProjData$analyst <- AnalystName
-  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
   return(paste('The Project Analyst name has been changed to', AnalystName))
 }
 
@@ -46,7 +46,7 @@ SetProjectName <- function(ProjectName){
     ProjData <- list()
     }
   ProjData$ProjectName <- ProjectName
-  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
   return(paste('The Project name has been changed to', ProjectName))
 }
 
@@ -72,7 +72,7 @@ SetProjectPI <- function(PI){
     ProjData <- list()
     }
   ProjData$PI <- PI
-  write.dcf(ProjData, file.path('/.ProjData/Data.dcf'))
+  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
   return(paste('The Project PI has been changed to', PI))
 }
 
