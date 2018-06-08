@@ -70,7 +70,7 @@ setPermanentAnalyst <- function(Name){
                         paste0(Name), "')"),
                  opts)
   } else {
-    opts <- c(opts, paste0("(CIDAtools.analyst = '",
+    opts <- c(opts, paste0("options(CIDAtools.analyst = '",
                            paste0(Name), "')"))
   }
   if(!file.create(fname, showWarnings = F))
