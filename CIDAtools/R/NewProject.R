@@ -72,6 +72,13 @@ proj_setup <- function(path, ...){
                          "File | Description",
                          "---|---------------------------------------------------------------------",
                          "  ")
+  readme$Code <- c("This folder contains all the code.  ",
+                   "  ",
+                   "Details about the files in this folder:",
+                   "  ",
+                   "File | Description",
+                   "---|---------------------------------------------------------------------",
+                   "  ")
   readme$DataProcessed <- c("# Processed Data  ",
                             "",
                             "Scripts that created the files in this folder:  ",
@@ -79,14 +86,47 @@ proj_setup <- function(path, ...){
                             "File | Script",
                             "---|---------------------------------------------------------------------",
                             "")
+  readme$DataRaw <- c("# Raw Data",
 
+                      "Details about the files:",
 
-  dir.create(paste0(path, '/Admin'), recursive = TRUE, showWarnings = FALSE)
-  writeLines(paste0(readme$Admin, collapse = '\n'),
-             con = file.path(path, "Admin/ReadMe.md"))
-  dir.create(paste0(path, '/Background'), recursive = TRUE, showWarnings = FALSE)
-  writeLines(paste0(readme$Background, collapse = '\n'),
-             con = file.path(path, "Background/ReadMe.md"))
+                      "File | Details",
+                      "---|---------------------------------------------------------------------",
+                      "    ",
+                      "")
+
+  readme$Dissemination <- c("# Dissemination",
+
+                            "This folder contains abstracts, posters, papers and anything else produced  ",
+                            "for dissemination.  ",
+
+                            "Details about the files:",
+
+                            "File | Description",
+                            "---|---------------------------------------------------------------------",
+                            "     ",
+                            "")
+  readme$Reports <- c("# Reports",
+
+                      "This folder contains the rmardown scripts and pdf output of reports.  ",
+
+                      "Details about the files:",
+
+                      "File | Description",
+                      "---|---------------------------------------------------------------------",
+                      "  ",
+                      "")
+  createDir <- function(x){
+    paste0(path, '/', x)
+  }
+
+  createFiles <- function(x){
+    file.path(path, paste0(x, '/ReadMe.md'))
+  }
+  pathnames <- sapply(names(readme), createDir)
+  dir_created <- lapply(pathnames, dir.create, showWarnings = F, recursive = T)
+  con <- lapply(names(readme), createFiles)
+  files_created <- mapply(writeLines, lapply(readme, paste0, collapse = '\n'), con)
 
   # create a meta file for project info
   if(meta){
