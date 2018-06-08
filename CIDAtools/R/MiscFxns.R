@@ -17,18 +17,16 @@ setAnalyst <- function(AnalystName){
     warning('Only First String is Used')
     AnalystName <- AnalystName[1]
   }
-  AnalErr <- try(setPermanentAnalyst(AnalystName), silent = T)
-  msg1 <- NULL
-  if(!is.null(AnalErr)) msg1 <- paste0('Default Analyst can not be ',
-                                       'saved permanently.\n',
-                                       'You will need to set for each ',
-                                       'R session.\n')
+  options(CIDAtools.analyst = AnalystName)
   site_path = R.home(component = "home")
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')
   if(file.access(Project_setup, 2) == -1)
-    stop(paste0(msg1,
+    stop(paste0('Default Analyst can not be ',
+                'saved permanently.\n',
+                'You will need to set for each ',
+                'R session.\n',
                 'You do not have permission to change\n',
                 'New CIDA Project Template'))
   DCF <- read.dcf(file.path(Project_setup), all = T)
@@ -56,25 +54,3 @@ nrowP <- function(x){
   format(nrow(df), big.mark = ',', trim = T)
 }
 
-
-setPermanentAnalyst <- function(Name){
-  options(CIDAtools.analyst = Name)
-  site_path = R.home(component = "home")
-  fname = file.path(site_path, "etc", "Rprofile.site")
-  opts <- character()
-  if(file.exists(fname)){
-    opts <- readLines(fname)
-  }
-  if(sum(grepl("CIDAtools.analyst", opts)) > 0){
-    opts <- gsub("CIDAtools.analyst = .+)",
-                 paste0("CIDAtools.analyst = '",
-                        paste0(Name), "')"),
-                 opts)
-  } else {
-    opts <- c(opts, paste0("(CIDAtools.analyst = '",
-                           paste0(Name), "')"))
-  }
-  if(!file.create(fname, showWarnings = F))
-    stop()
-  writeLines(opts, fname)
-}
