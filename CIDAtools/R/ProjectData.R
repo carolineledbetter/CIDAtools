@@ -13,14 +13,7 @@ SetProjectAnalyst <- function(AnalystName){
     warning('Only First String is Used')
     AnalystName <- AnalystName[1]
   }
-  if(file.exists(file.path('.ProjData/Data.dcf'))){
-    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  } else{
-    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = F)
-    ProjData <- list()
-    }
-  ProjData$analyst <- AnalystName
-  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
+  SetProjectData('analyst', AnalystName)
   return(paste('The Project Analyst name has been changed to', AnalystName))
 }
 
@@ -39,14 +32,7 @@ SetProjectName <- function(ProjectName){
     warning('Only First String is Used')
     ProjectName <- ProjectName[1]
   }
-  if(file.exists(file.path('.ProjData/Data.dcf'))){
-    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  } else{
-    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = F)
-    ProjData <- list()
-    }
-  ProjData$ProjectName <- ProjectName
-  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
+  SetProjectData('ProjectName', ProjectName)
   return(paste('The Project name has been changed to', ProjectName))
 }
 
@@ -65,14 +51,7 @@ SetProjectPI <- function(PI){
     warning('Only First String is Used')
     PI <- PI[1]
   }
-  if(file.exists(file.path('.ProjData/Data.dcf'))){
-    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
-  } else{
-    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = FALSE)
-    ProjData <- list()
-    }
-  ProjData$PI <- PI
-  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
+  SetProjectData('PI', PI)
   return(paste('The Project PI has been changed to', PI))
 }
 
@@ -130,3 +109,32 @@ ProjectPI <- function(){
   }
   return('')
 }
+
+#' Set data for project
+#'
+#' Allows you to set misc project data parameters
+#' for Project Name, Analyst, or PI recommend you use specific function
+#'
+#' @param Parameter Project Parameter to be set
+#' @param Value Value to set to project parameter
+#'
+#'
+
+SetProjectData <- function(Parameter, Value){
+  if (!is.character(Parameter) | !is.character(Parameter))
+    stop('Parameter must be a character string of length one')
+  if(!is.character(Value)) stop('Value must be a character string')
+  if(length(Value) > 1) {
+    warning('Only First String is Used')
+    Value <- Value[1]
+  }
+  if(file.exists(file.path('.ProjData/Data.dcf'))){
+    ProjData <- read.dcf(file.path('.ProjData/Data.dcf'), all = T)
+  } else{
+    dir.create(paste0('.ProjData/'), recursive = T, showWarnings = F)
+    ProjData <- list()
+  }
+  ProjData[Parameter] <- Value
+  write.dcf(ProjData, file.path('.ProjData/Data.dcf'))
+}
+
