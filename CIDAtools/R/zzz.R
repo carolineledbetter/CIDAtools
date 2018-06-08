@@ -3,7 +3,8 @@
   if(is.null(defaultAnalyst)){
     defaultAnalyst <- 'Default Analyst Name'
   }
-  invisible(setPermanentAnalyst(defaultAnalyst))
+  options(CIDAtools.analyst = defaultAnalyst)
+  invisible()
 }
 
 
@@ -24,7 +25,7 @@ setPermanentAnalyst <- function(Name){
     opts <- c(opts, paste0("(CIDAtools.analyst = '",
                            paste0(Name), "')"))
   }
+  if(!file.create(fname, showWarnings = F))
+    stop()
   writeLines(opts, fname)
 }
-
-

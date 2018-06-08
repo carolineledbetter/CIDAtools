@@ -17,11 +17,20 @@ setAnalyst <- function(AnalystName){
     warning('Only First String is Used')
     AnalystName <- AnalystName[1]
   }
-  setPermanentAnalyst(AnalystName)
+  AnalErr <- try(setPermanentAnalyst(AnalystName), silent = T)
+  msg1 <- NULL
+  if(!is.null(AnalErr)) msg1 <- paste0('Default Analyst can not be ',
+                                       'saved permanently.\n',
+                                       'You will need to set for each ',
+                                       'R session.\n')
   site_path = R.home(component = "home")
   Project_setup <- paste0(site_path,
                           '/library/CIDAtools/rstudio/',
                           'templates/project/proj_setup.dcf')
+  if(file.access(Project_setup, 2) == -1)
+    stop(paste0(msg1,
+                'You do not have permission to change\n',
+                'New CIDA Project Template'))
   DCF <- read.dcf(file.path(Project_setup), all = T)
   DCF$Default[DCF$Parameter == 'analyst' &
                 !is.na(DCF$Parameter)] <- AnalystName
