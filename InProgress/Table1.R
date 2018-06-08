@@ -21,6 +21,10 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
                    incl_missing = F, incl_pvalues = T,
                    emphasis = c('s', 'b', 'n'),
                    MedIQR = NULL) {
+  #############################################################################
+  ### determine if it a design obect or data frame
+  #############################################################################
+  
   # determing if data is a design object or data frame
   weighted <- F
   if (!is.data.frame(data)){
@@ -41,15 +45,15 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
       }
   }
 
+  #############################################################################
+  ### setup dummy variable for unstratified data
+  #############################################################################
+  
   # do not include p_values if data is not stratified
-  # setup dummy variable for unstratified data
   if (is.null(colvariable)) {
     incl_pvalues <- F
     data$dummy <- factor(rep('', nrow(data)))
     colvariable <- 'dummy'
-    if (weighted == T){
-      design$variables$dummy <- factor(rep('', nrow(design$variables)))
-    }
   }
 
   # Warn users p_values are not calculated on missing obs
@@ -57,31 +61,21 @@ Table1 <- function(rowvars, colvariable, data, row_var_names = NULL,
     warning('P values are only calculated on non-missing observations')
   }
 
-  #check that all arguments are valid
+  #############################################################################
+  ### check that all arguments are valid
+  #############################################################################
+  
+
   if (!is.atomic(rowvars)) stop("Please pass row variables as a vector")
-  classes <- sapply(data[, rowvars], class)
-  if (!all(classes %in% c('integer', 'factor', 'logical', 'double', 'numeric')))
+  classes <- sapply(data[, rowvars, drop  = F], class)
+  if (!all(classes %in% c('integer', 'factor', 'logical', 'numeric')))
     stop('Row variables must be numeric or factors')
 
   if(!is.null(MedIQR)) {
     if(!is.character(MedIQR)) stop('Median IQR requests must be variable names')
     classes <- sapply(data[, MedIQR, drop = F], class)
-    if(!all(classes %in% c('integer', 'double', 'numeric')))
+    if(!all(classes %in% c('integer', 'numeric')))
       stop('Median IQR requests must be continous variables')
-  }
-
-  if (weighted == T) {
-    if (length(unique(design$variables[, colvariable])) > 20) {
-      stop(paste0("Column Variable has more than 20 unique values,",
-                  "please pass a column variable with less",
-                  "than 20 unique values"))
-    }
-
-    if (!is.factor(design$variables[, colvariable])) {
-      design$variables[, colvariable] <-
-            factor(design$variables[, colvariable])
-      data[, colvariable] <- factor(design$variables[, colvariable])[0]
-    }
   }
 
   if (length(unique(data[, colvariable])) > 20) {
