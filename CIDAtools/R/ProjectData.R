@@ -117,6 +117,7 @@ ProjectPI <- function(){
 #'
 #' @param Parameter Project Parameter to be set
 #' @param Value Value to set to project parameter
+#' @export
 #'
 #'
 
