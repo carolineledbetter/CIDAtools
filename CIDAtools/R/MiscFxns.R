@@ -53,7 +53,7 @@ setAnalyst <- function(AnalystName){
 
 
 nrowP <- function(x){
-  format(nrow(df), big.mark = ',', trim = T)
+  format(nrow(x), big.mark = ',', trim = T)
 }
 
 
