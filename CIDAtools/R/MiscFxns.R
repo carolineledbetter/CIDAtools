@@ -64,7 +64,7 @@ setPermanentAnalyst <- function(Name){
   if(file.exists(fname)){
     opts <- readLines(fname)
   }
-  opts[-grep('options\\(CIDAtools.analyst = ', opts)] -> opts
+  opts[grep('options\\(CIDAtools.analyst = ', opts, invert = T)] -> opts
   opts <- c(opts, paste0("options(CIDAtools.analyst = '",
                            paste0(Name), "')"))
   if(!file.create(fname, showWarnings = F))
@@ -94,7 +94,7 @@ removeAnalyst <- function(quiet = F){
     return(FALSE)
   }
   opts <- readLines(fname)
-  opts[-grep('options\\(CIDAtools.analyst = ', opts)] -> opts
+  opts[grep('options\\(CIDAtools.analyst = ', opts, invert = T)] -> opts
   if(file.access(fname, 2) != 0){
     if(!quiet){
       return('You do not have permission to write to users Rprofile')
@@ -102,13 +102,13 @@ removeAnalyst <- function(quiet = F){
     return(FALSE)
   }
   if(length(opts) == 0){
-    file.remove(filename)
+    file.remove(fname)
     if(!quiet){
-    return('Users .Rpofile is empty and was deleted')
+    return('Users .Rprofile is empty and was deleted')
     }
     return(TRUE)
   }
-  writeLines(opts, filename)
+  writeLines(opts, fname)
   if(!quiet)
     return('options(CIDAtools.analyst) has been removed from users profile')
   return(TRUE)
