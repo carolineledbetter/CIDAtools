@@ -64,16 +64,54 @@ setPermanentAnalyst <- function(Name){
   if(file.exists(fname)){
     opts <- readLines(fname)
   }
-  if(sum(grepl("CIDAtools.analyst", opts)) > 0){
-    opts <- gsub("CIDAtools.analyst = .+)",
-                 paste0("CIDAtools.analyst = '",
-                        paste0(Name), "')"),
-                 opts)
-  } else {
-    opts <- c(opts, paste0("options(CIDAtools.analyst = '",
+  opts[-grep('options\\(CIDAtools.analyst = ', opts)] -> opts
+  opts <- c(opts, paste0("options(CIDAtools.analyst = '",
                            paste0(Name), "')"))
-  }
   if(!file.create(fname, showWarnings = F))
     stop()
   writeLines(opts, fname)
 }
+
+#' Remove Default Analyst from ~/.Rprofile
+#'
+#' This function removes the default analyst set with setAnalyst() from the users
+#' .Rprofile. If this is the only entry in .Rprofile it will remove the file as well.
+#'
+#' @param quiet should a message indicating result be returned, if TRUE will only
+#' return TRUE or FALSE
+#'
+#' @return Message indicating sucess or failue
+#' @keywords Analyst remove
+#' @export
+#'
+#'
+removeAnalyst <- function(quiet = F){
+  fname = file.path("~/.Rprofile")
+  if(file.access(fname, 4) != 0){
+    if(!quiet){
+    return('User does not have an Rprofile or Rprofile can not be read')
+    }
+    return(FALSE)
+  }
+  opts <- readLines(fname)
+  opts[-grep('options\\(CIDAtools.analyst = ', opts)] -> opts
+  if(file.access(fname, 2) != 0){
+    if(!quiet){
+      return('You do not have permission to write to users Rprofile')
+    }
+    return(FALSE)
+  }
+  if(length(opts) == 0){
+    file.remove(filename)
+    if(!quiet){
+    return('Users .Rpofile is empty and was deleted')
+    }
+    return(TRUE)
+  }
+  writeLines(opts, filename)
+  if(!quiet)
+    return('options(CIDAtools.analyst) has been removed from users profile')
+  return(TRUE)
+}
+
+
