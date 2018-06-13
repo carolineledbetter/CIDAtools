@@ -3,6 +3,7 @@ proj_setup <- function(path, ...){
   dir.create(path, recursive = TRUE, showWarnings = FALSE)
   dots <- list(...)
   attach(dots)
+  on.exit(detach(dots))
   ProjectName <- paste0(path)
 
   if(git_lfs){
@@ -14,11 +15,11 @@ proj_setup <- function(path, ...){
   }
 
   if(git_init){
-    if (!requireNamespace('git2lr', quietly = T)) {
-      warning('git2lr is required for git initialization')
+    if (!requireNamespace('git2r', quietly = T)) {
+      warning('git2r is required for git initialization')
     } else{
     repo<- git2r::init(path)
-    if(rem_origin != '') git2r::remote_set_url(repo, 'origin', rem_origin)
+    if(remote_origin != '') git2r::remote_add(repo, 'origin', remote_origin)
     }
   }
 
@@ -138,7 +139,7 @@ proj_setup <- function(path, ...){
     ProjData <- list(ProjectName = ProjectName, PI = PI, analyst = analyst)
     write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   }
-detach(dots)
+
 
 }
 

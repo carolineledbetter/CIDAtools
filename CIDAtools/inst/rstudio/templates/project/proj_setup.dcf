@@ -5,13 +5,13 @@ OpenFiles: ReadMe.md
 Parameter: PI
 Widget: TextInput
 Label: Principal Investigator
-Default: 
+Default:
 Position: Right
 
 Parameter: analyst
 Widget: TextInput
 Label: Analyst
-Default: 
+Default:
 Position: Right
 
 Parameter: git_init
@@ -20,10 +20,10 @@ Label: Initialize Git Repo?
 Default: On
 Position: Left
 
-Parameter: rem_origin
+Parameter: remote_origin
 Widget: TextInput
 Label: Optional: Set Remote Origin
-Default: 
+Default:
 Position: Right
 
 Parameter: git_lfs
