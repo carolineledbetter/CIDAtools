@@ -9,13 +9,13 @@
 \title{These are internal functions for returning the correct rows (based on class)
 for table 1}
 \usage{
-returnRow(x, ...)
+returnRow(x, y)
 
 \method{returnRow}{factor}(x, y)
 
 \method{returnRow}{numeric}(x, y)
 
-\method{returnRow}{character}(x, ...)
+\method{returnRow}{character}(x, y)
 
 \method{returnRow}{MedIQR}(x, y)
 }

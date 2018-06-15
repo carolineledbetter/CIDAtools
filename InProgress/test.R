@@ -28,7 +28,7 @@ test <- structure(list(m = structure(c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L),
 
 
 
-table1(c(m, z, y, w, x), 'n', test)
+table1(test, c(m, z, y, w, x), 'n')
 table1(c(m, z, y, 5, x), 'n', test)
 table1(c(m, z, y, 5, x), n, test)
 table1(c(m, z, y, 5, x), 2, test)

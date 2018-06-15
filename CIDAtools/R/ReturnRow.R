@@ -6,7 +6,7 @@
 #'
 #' @importFrom stats aggregate quantile
 
-returnRow <- function(x, ...){
+returnRow <- function(x, y){
   UseMethod('returnRow')
 }
 
@@ -43,10 +43,9 @@ returnRow.numeric <- function(x, y){
 #' @describeIn returnRow method for characters - converts to factor and then
 #' runs returnRow.factor
 
-returnRow.character <- function(x, ...){
+returnRow.character <- function(x, y){
   x <- factor(x)
-  i <- eval(substitute(i), parent.frame())
-  returnRow(x, ...)
+  returnRow(x, y)
 }
 
 #' @describeIn returnRow methods for numerics with request for Median and IQR
