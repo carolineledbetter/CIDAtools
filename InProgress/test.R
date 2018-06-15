@@ -23,14 +23,13 @@ test <- structure(list(m = structure(c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L),
                                        15.8048454896255, 29.7147992625034,
                                        11.8445634965342, 28.7079226871819,
                                        12.5149351845833, 14.8212199870413),
-                                     class = c("MedIQR", 'numeric'))),
+                                     class = c('numeric'))),
                   row.names = c(NA,  10L), class = "data.frame")
 test$x <- as.character(test$x)
+test$l <- runif(10)
+test$l[c(1, 5, 7)] <- NA
 
-
-
-table1(test, c(m, z, y, w), 'n')
+table1(test, c(m, p, q, x, z, y, w), 'n')
 table1(test, c(m, z, y, 5, x), 'n')
-table1(c(m, z, y, 5, x), n, test)
-table1(c(m, z, y, 5, x), 2, test)
+
 

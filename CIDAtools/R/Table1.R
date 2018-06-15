@@ -55,13 +55,44 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               incl_pvalues = F,
                               emphasis = c('b', 's', 'n'),
                               MedIQR = NULL){
+  emphasis <- match.arg(emphasis)
   nl <- as.list(seq_along(data))
   names(nl) <- names(data)
-  rows <- data[, eval(substitute(rowvars), nl, parent.frame())]
-  ord <- order(sapply(lapply(rows, class), `[[`, 1))
-  rows <- rows[, ord]
+  rows <- data[, eval(substitute(rowvars), nl, parent.frame()), drop = F]
+  median_rows <- which(names(rows) %in% MedIQR)
+  class(rows[, median_rows]) <- c('MedIQR', "numeric")
+  n_levs <- sapply(lapply(rows, function(x)
+    if(is.character(x)) levels(factor(x)) else levels(x)),
+    length)
+  cls <- sapply(lapply(rows, class), `[[`, 1)
+  cls[cls == 'character'] <- 'factor'
+  cls[cls == 'MedIQR'] <- 'zzz'
+  ord <- order(cls, n_levs)
+  rows <- rows[, ord, drop = F]
   if(!is.null(rowvar_names)) names(rows) <- rowvar_names
+  if(emphasis == 'b') names(rows) <- paste0('**', names(rows), '**')
   y <- data[, eval(substitute(colvar), nl, parent.frame())]
-  z <- lapply(rows, returnRow, y = y)
-  z
+  Cols <- length(levels(y))
+  p_col <- NULL
+  if(incl_pvalues) p_col <- ''
+  N_pct <- c('', rep('N(%)', Cols), p_col)
+  if(sum(cls == 'factor') == 0) N_pct <- NULL
+  Mean_sd <- c('', rep('Mean(SD)', Cols), p_col)
+  if(sum(cls == 'numeric') == 0) Mean_sd <- NULL
+  Median <- c('', rep('Median(IQR)', Cols), p_col)
+  if(sum(cls == 'zzz') == 0) Median <- NULL
+  tbl <- lapply(rows, returnRow, y = y, p = incl_pvalues)
+  cls <- cls[ord]
+  cats <- do.call(rbind, tbl[cls == 'factor'])
+  means <- do.call(rbind, tbl[cls == 'numeric'])
+  medians <- do.call(rbind, tbl[cls == 'zzz'])
+  tbl <- rbind(N_pct, cats, Mean_sd, means, Median, medians)
+  if(incl_pvalues) p_col <- 'P value'
+  Stratified_N <- table(y)
+  Stratified_N <- paste0(levels(y), ' \\n N = ', Stratified_N)
+  Header <- c('', Stratified_N, p_col)
+  tbl <- rbind(Header, tbl)
+  rownames(tbl) <- NULL
+  return(tbl)
 }
+
