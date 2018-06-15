@@ -25,11 +25,12 @@ test <- structure(list(m = structure(c(2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L),
                                        12.5149351845833, 14.8212199870413),
                                      class = c("MedIQR", 'numeric'))),
                   row.names = c(NA,  10L), class = "data.frame")
+test$x <- as.character(test$x)
 
 
 
-table1(test, c(m, z, y, w, x), 'n')
-table1(c(m, z, y, 5, x), 'n', test)
+table1(test, c(m, z, y, w), 'n')
+table1(test, c(m, z, y, 5, x), 'n')
 table1(c(m, z, y, 5, x), n, test)
 table1(c(m, z, y, 5, x), 2, test)
 

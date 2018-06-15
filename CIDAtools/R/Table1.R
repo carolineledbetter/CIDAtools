@@ -48,6 +48,7 @@ table1 <- function(data, ...){
 }
 
 #' @describeIn table1 unweighted table 1
+#' @export
 
 table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               rowvar_names = NULL, incl_missing = T,

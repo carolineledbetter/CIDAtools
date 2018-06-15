@@ -11,6 +11,8 @@ returnRow <- function(x, y){
 }
 
 #' @describeIn returnRow method for factors
+#' @export
+#'
 
 returnRow.factor <- function(x, y){
   home_env <- eval(getHome(), parent.frame())
@@ -25,6 +27,7 @@ returnRow.factor <- function(x, y){
 }
 
 #' @describeIn returnRow method for numerics
+#' @export
 
 returnRow.numeric <- function(x, y){
   home_env <- eval(getHome(), parent.frame())
@@ -42,6 +45,7 @@ returnRow.numeric <- function(x, y){
 
 #' @describeIn returnRow method for characters - converts to factor and then
 #' runs returnRow.factor
+#' @export
 
 returnRow.character <- function(x, y){
   x <- factor(x)
@@ -49,6 +53,8 @@ returnRow.character <- function(x, y){
 }
 
 #' @describeIn returnRow methods for numerics with request for Median and IQR
+#' @export
+
 
 returnRow.MedIQR <- function(x, y){
   home_env <- eval(getHome(), parent.frame())
