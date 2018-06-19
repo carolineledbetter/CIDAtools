@@ -23,7 +23,8 @@ returnRow.factor <- function(x, y, p){
   if(incl_missing) x <- addNA(x, ifany = T)
   N <- table(x, y)
   pct <- round(prop.table(N, 2)*100, 0)
-  N_pct <- matrix(paste0(N, '(', pct, ')' ),
+  N_pct <- matrix(paste0(format(N, big.mark = ',', trim = T)
+                         , '(', pct, ')' ),
                   byrow = F, ncol = ncol(N))
   level_names <- dimnames(N)[[1]]
   level_names[is.na(level_names)] <- 'Missing'
@@ -62,8 +63,10 @@ returnRow.numeric <- function(x, y, p){
   y <- as.data.frame(y)
   mean <- aggregate(x, by = y, mean, na.rm = T, simplify = F)
   sd <- aggregate(x, by = y, sd, na.rm = T)
-  mean <- format(mean, trim = T, drop0trailing = F, digits = sigfig)
-  sd <- format(sd, trim = T, drop0trailing = F, digits = sigfig)
+  mean <- format(mean, trim = T, drop0trailing = F, digits = sigfig,
+                 big.mark = ',')
+  sd <- format(sd, trim = T, drop0trailing = F, digits = sigfig,
+               big.mark = ',')
   mean_sd <- paste0(mean$x, "(", sd$x, ")")
   row <- c(name, mean_sd)
   p_val <- NULL
@@ -109,7 +112,7 @@ returnRow.MedIQR <- function(x, y, p){
                    simplify = F,
                    na.rm = T)$x
   row <- lapply(row, format, trim = T, digits = sigfig,
-                drop0trailing = F)
+                drop0trailing = F, big.mark = ',')
   row <- sapply(row, paste0,
                 ... =  c("(", "-", ")"),
                 collapse = '')
@@ -140,6 +143,7 @@ MissingCont <- function(x,y){
   number_missing <- aggregate(x, by = y, function(x) sum(is.na(x)),
                               simplify = T)[, 2]
   pct <- round(number_missing/table(y)*100, 0)
-  Missing <- paste0(number_missing, "(", pct, ")")
+  Missing <- paste0(format(number_missing, big.mark = ',', trim = T),
+                    "(", pct, ")")
   Missing <- c('\\ Missing(N%)', Missing)
 }

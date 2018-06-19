@@ -64,12 +64,13 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   n_levs <- sapply(lapply(rows, function(x)
     if(is.character(x)) levels(factor(x)) else levels(x)),
     length)
+  n_levs[n_levs != 2] <- 3
   cls <- sapply(lapply(rows, class), `[[`, 1)
   cls[cls == 'character'] <- 'factor'
   cls[cls == 'MedIQR'] <- 'zzz'
   ord <- order(cls, n_levs)
-  rows <- rows[, ord, drop = F]
   if(!is.null(rowvar_names)) names(rows) <- rowvar_names
+  rows <- rows[, ord, drop = F]
   if(emphasis == 'b') names(rows) <- paste0('**', names(rows), '**')
   y <- data[, eval(substitute(colvar), nl, parent.frame())]
   Cols <- length(levels(y))
@@ -89,7 +90,8 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   tbl <- rbind(N_pct, cats, Mean_sd, means, Median, medians)
   if(incl_pvalues) p_col <- 'P value'
   Stratified_N <- table(y)
-  Stratified_N <- paste0(levels(y), ' \\n N = ', Stratified_N)
+  Stratified_N <- format(Stratified_N, big.mark = ',', trim = T)
+  Stratified_N <- paste0(levels(y), ' \\\n N = ', Stratified_N)
   Header <- c('', Stratified_N, p_col)
   tbl <- rbind(Header, tbl)
   rownames(tbl) <- NULL
