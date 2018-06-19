@@ -62,7 +62,7 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   median_rows <- which(names(rows) %in% MedIQR)
   class(rows[, median_rows]) <- c('MedIQR', "numeric")
   n_levs <- sapply(lapply(rows, function(x)
-    if(incl_missing = F) return(
+    if(incl_missing == F) return(
     if(is.character(x)) levels(factor(x)) else levels(x)),
     if(is.character(x)){
       levels(factor(x, exclude = NULL))
