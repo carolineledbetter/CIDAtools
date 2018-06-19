@@ -62,7 +62,12 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   median_rows <- which(names(rows) %in% MedIQR)
   class(rows[, median_rows]) <- c('MedIQR', "numeric")
   n_levs <- sapply(lapply(rows, function(x)
+    if(incl_missing = F) return(
     if(is.character(x)) levels(factor(x)) else levels(x)),
+    if(is.character(x)){
+      levels(factor(x, exclude = NULL))
+      }else {
+        levels(addNA(x))}),
     length)
   n_levs[n_levs != 2] <- 3
   cls <- sapply(lapply(rows, class), `[[`, 1)
@@ -95,6 +100,8 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   Header <- c('', Stratified_N, p_col)
   tbl <- rbind(Header, tbl)
   rownames(tbl) <- NULL
+  colnames(tbl) <- tbl[1, ]
+  tbl <- tbl[-1, ]
   return(tbl)
 }
 
