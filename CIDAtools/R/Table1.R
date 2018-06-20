@@ -59,16 +59,16 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   nl <- as.list(seq_along(data))
   names(nl) <- names(data)
   rows <- data[, eval(substitute(rowvars), nl, parent.frame()), drop = F]
+  y <- data[, eval(substitute(colvar), nl, parent.frame())]
   median_rows <- which(names(rows) %in% MedIQR)
   class(rows[, median_rows]) <- c('MedIQR', "numeric")
-  n_levs <- sapply(lapply(rows, function(x)
-    if(incl_missing == F) return(
-    if(is.character(x)) levels(factor(x)) else levels(x)),
-    if(is.character(x)){
-      levels(factor(x, exclude = NULL))
-      }else {
-        levels(addNA(x))}),
-    length)
+  n_levs <- sapply(lapply(rows, function(x){
+      if(is.character(x)) y <- levels(factor(x)) else y <-levels(x)
+      }), length)
+  if(incl_missing == T) {
+    add_miss <- sapply(rows[!is.na(y), ], function(x) any(is.na(x)))
+    n_levs <- n_levs + add_miss
+    }
   n_levs[n_levs != 2] <- 3
   cls <- sapply(lapply(rows, class), `[[`, 1)
   cls[cls == 'character'] <- 'factor'
@@ -77,7 +77,6 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   if(!is.null(rowvar_names)) names(rows) <- rowvar_names
   rows <- rows[, ord, drop = F]
   if(emphasis == 'b') names(rows) <- paste0('**', names(rows), '**')
-  y <- data[, eval(substitute(colvar), nl, parent.frame())]
   Cols <- length(levels(y))
   p_col <- NULL
   if(incl_pvalues) p_col <- ''
