@@ -7,8 +7,8 @@ getName <- function(){
 
 getHome <- function(){
   index <- 1
-  while(!identical(parent.frame(n = index), globalenv())){
+  while(!exists('incl_missing', parent.frame(n = index))){
     index = index + 1
     }
-  return(index - 2)
+  return(index - 1)
 }
