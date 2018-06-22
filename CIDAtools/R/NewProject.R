@@ -8,6 +8,7 @@ proj_setup <- function(path, ...){
 
   if(git_lfs){
   LFS_text <- paste0(c("Data*/** filter=lfs diff=lfs merge=lfs -text",
+                       "Data*/*/* filter=lfs diff=lfs merge=lfs -text",
                       "*/ReadMe.md !filter !diff !merge !text"),
                      collapse = ' \n ')
   writeLines(LFS_text,
