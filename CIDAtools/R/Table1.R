@@ -61,7 +61,7 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   rows <- data[, eval(substitute(rowvars), nl, parent.frame()), drop = F]
   y <- data[, eval(substitute(colvar), nl, parent.frame())]
   median_rows <- which(names(rows) %in% MedIQR)
-  class(rows[, median_rows]) <- c('MedIQR', "numeric")
+  for(i in median_rows){class(rows[, i]) <- c('MedIQR', 'numeric')}; remove(i)
   n_levs <- sapply(lapply(rows, function(x){
       if(is.character(x)) y <- levels(factor(x)) else y <-levels(x)
       }), length)
@@ -73,7 +73,8 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   cls <- sapply(lapply(rows, class), `[[`, 1)
   cls[cls == 'character'] <- 'factor'
   cls[cls == 'MedIQR'] <- 'zzz'
-  ord <- order(cls, n_levs)
+  ord <- 1
+  if(length(rows) != 1) ord <- order(cls, n_levs)
   if(!is.null(rowvar_names)) names(rows) <- rowvar_names
   rows <- rows[, ord, drop = F]
   if(emphasis == 'b') names(rows) <- paste0('**', names(rows), '**')
@@ -99,8 +100,7 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   Header <- c('', Stratified_N, p_col)
   tbl <- rbind(Header, tbl)
   rownames(tbl) <- NULL
-  colnames(tbl) <- tbl[1, ]
-  tbl <- tbl[-1, ]
+  colnames(tbl) <- NULL
   return(tbl)
 }
 
