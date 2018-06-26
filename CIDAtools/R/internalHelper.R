@@ -7,7 +7,7 @@ getName <- function(){
 
 getHome <- function(){
   index <- 1
-  while(!exists('incl_missing', parent.frame(n = index))){
+  while(!exists('thisisthehomecallingenvironment', parent.frame(n = index))){
     index = index + 1
     }
   return(index - 1)
