@@ -6,35 +6,8 @@ proj_setup <- function(path, ...){
   on.exit(detach(dots))
   ProjectName <- paste0(path)
 
-  if(git_lfs){
-  LFS_text <- paste0(c("Data*/** filter=lfs diff=lfs merge=lfs -text",
-                       "Data*/*/* filter=lfs diff=lfs merge=lfs -text",
-                      "*/ReadMe.md !filter !diff !merge !text"),
-                     collapse = ' \n ')
-  writeLines(LFS_text,
-             con = file.path(path, ".gitattributes"))
-  }
-
-  if(git_init){
-    if (!requireNamespace('git2r', quietly = T)) {
-      warning('git2r is required for git initialization')
-    } else{
-    repo<- git2r::init(path)
-    if(remote_origin != '') git2r::remote_add(repo, 'origin', remote_origin)
-    }
-  }
-
-  if(nodata){
-    gitignore <- paste0(c("# Session Data files",".RData",
-                          "# R Data files","*.RData","*.rda","*.rdata","*.rda",
-                          "*.csv","*.txt","*.dat",
-                          "*.xls*",
-                          "*.sas7bdat","*.xport",
-                          "*.mdb",
-                          "DataRaw/","DataProcessed/"), collapse = '\n')
-    writeLines(gitignore, con = file.path(path, '.gitignore'))
-  }
-
+  #############################################################################
+  ### Setup ReadMe Files
   readme <- c(paste0("# ", ProjectName, "  "),
               paste0("**PI:**", PI, "  "),
               paste0("**Analyst**:", analyst, "  "),
@@ -140,6 +113,49 @@ proj_setup <- function(path, ...){
     ProjData <- list(ProjectName = ProjectName, PI = PI, analyst = analyst)
     write.dcf(ProjData, file.path(path, '/.ProjData/Data.dcf'))
   }
+
+  ############################################################################
+  ### setup git
+
+
+  if(git_lfs){
+    LFS_text <- paste0(c("Data*/*/* filter=lfs diff=lfs merge=lfs -text",
+                         "*/ReadMe.md !filter !diff !merge !text",
+                         "*.csv filter=lfs diff=lfs merge=lfs -text",
+                         "*.xls* filter=lfs diff=lfs merge=lfs -text",
+                         "*.RDa* filter=lfs diff=lfs merge=lfs -text",
+                         "*.rda* filter=lfs diff=lfs merge=lfs -text",
+                         "*.Rda* filter=lfs diff=lfs merge=lfs -text",
+                         "*.RDA* filter=lfs diff=lfs merge=lfs -text"),
+                       collapse = ' \n ')
+    writeLines(LFS_text,
+               con = file.path(path, ".gitattributes"))
+  }
+
+  if(git_init){
+    if (!requireNamespace('git2r', quietly = T)) {
+      warning('git2r is required for git initialization')
+    } else{
+      repo<- git2r::init(path)
+      if(remote_origin != '') git2r::remote_add(repo, 'origin', remote_origin)
+      if(initcommit) {
+        git2r::add(repo, 'ReadMe.md')
+        git2r::commit(repo, message = 'Initial Commit')
+      }
+    }
+  }
+
+  if(nodata){
+    gitignore <- paste0(c("# Session Data files",".RData",
+                          "# R Data files","*.RData","*.rda","*.rdata","*.rda",
+                          "*.csv","*.txt","*.dat",
+                          "*.xls*",
+                          "*.sas7bdat","*.xport",
+                          "*.mdb",
+                          "DataRaw/","DataProcessed/"), collapse = '\n')
+    writeLines(gitignore, con = file.path(path, '.gitignore'))
+  }
+
 
 
 }

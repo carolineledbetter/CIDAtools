@@ -32,6 +32,12 @@ Label: Git LFS for Data?
 Default: On
 Position: Left
 
+Parameter:initcommit
+Widget:CheckboxInput
+Label:Initial Commit with ReadMe?
+Default: On
+Position:Left
+
 Parameter: nodata
 Widget: CheckboxInput
 Label: Exclude Data from git
