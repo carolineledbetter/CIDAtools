@@ -120,7 +120,7 @@ proj_setup <- function(path, ...){
 
   if(git_lfs){
     LFS_text <- paste0(c("Data*/*/* filter=lfs diff=lfs merge=lfs -text",
-                         "*/ReadMe.md !filter !diff !merge !text",
+                         "*/ReadMe.md !filter !diff !merge text=auto",
                          "*.csv filter=lfs diff=lfs merge=lfs -text",
                          "*.xls* filter=lfs diff=lfs merge=lfs -text",
                          "*.RDa* filter=lfs diff=lfs merge=lfs -text",
