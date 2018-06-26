@@ -3,6 +3,7 @@
 S3method(returnRow,MedIQR)
 S3method(returnRow,character)
 S3method(returnRow,factor)
+S3method(returnRow,logical)
 S3method(returnRow,numeric)
 S3method(table1,data.frame)
 export(ProjectAnalyst)

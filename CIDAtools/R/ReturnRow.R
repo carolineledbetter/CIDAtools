@@ -16,11 +16,17 @@ returnRow <- function(x, ...){
 #'
 
 returnRow.factor <- function(x, y, p){
+  # get location of home calling environment
   home_env <- getHome()
+  # get name of variable
   name <- eval(getName())
+  # get emphasis from home calling environment
   emphasis <- eval(substitute(emphasis), parent.frame(home_env))
+  # include missing? from home calling environment
   incl_missing <- eval(substitute(incl_missing), parent.frame(home_env))
   if(incl_missing) x <- addNA(x, ifany = T)
+
+  # get N and pct and paste together
   N <- table(x, y)
   pct <- round(prop.table(N, 2)*100, 0)
   N_pct <- matrix(paste0(format(N, big.mark = ',', trim = T)
@@ -38,7 +44,9 @@ returnRow.factor <- function(x, y, p){
     n_row <- n_row - 1
   }
   if(!p) return(table)
+  # add p values if requested
   if(any(table(x, y, exclude = c(NA, NaN)) < 5)){
+    # use fishers
     p_val <- try(fisher.test(x, y), silent = T)
     if(length(p_val) == 1) p_val <- NA else p_val <- p_val$p.value
   } else{
@@ -129,6 +137,18 @@ returnRow.MedIQR <- function(x, y, p){
   row <- matrix(c(row, Missing, p_val), nrow = 2, byrow = T)
   return(row)
 }
+
+
+#' @describeIn returnRow method for logicals - converts to factor and then
+#' runs returnRow.factor (with True as the first level)
+#' @export
+
+returnRow.logical <- function(x, y, p){
+  x <- factor(x, levels = c('TRUE', 'FALSE'))
+  returnRow(x, y, p)
+}
+
+
 
 #' Internal functions for returning the number of missing for continuous
 #' variable
