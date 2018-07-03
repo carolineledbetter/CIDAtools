@@ -43,14 +43,14 @@
 
 
 
-table1 <- function(data, ...){
+Table1 <- function(data, ...){
   UseMethod('table1')
 }
 
-#' @describeIn table1 unweighted table 1
+#' @describeIn Table1 unweighted table 1
 #' @export
 
-table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
+Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               rowvar_names = NULL, incl_missing = T,
                               incl_pvalues = F,
                               emphasis = c('b', 's', 'n'),
