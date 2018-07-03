@@ -44,7 +44,7 @@
 
 
 Table1 <- function(data, ...){
-  UseMethod('table1')
+  UseMethod('Table1')
 }
 
 #' @describeIn Table1 unweighted table 1
