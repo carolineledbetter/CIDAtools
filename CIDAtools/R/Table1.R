@@ -87,7 +87,8 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
 
   # get number of levels and sort so binary is on top only if no missing
   n_levs <- sapply(lapply(rows, function(x){
-      if(is.character(x)) y <- levels(factor(x)) else y <-levels(x)
+      if(is.character(x) | is.logical(x)){
+        y <- levels(factor(x))} else y <-levels(x)
       }), length)
   if(incl_missing == T) {
     add_miss <- sapply(rows[!is.na(y), ], function(x) any(is.na(x)))
@@ -97,7 +98,7 @@ table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
 
   # sort rows by class, want MedIQR last...
   cls <- sapply(lapply(rows, class), `[[`, 1)
-  cls[cls == 'character'] <- 'factor'
+  cls[cls %in% c('character', 'logical')] <- 'factor'
   cls[cls == 'MedIQR'] <- 'zzz'
 
   # ord won't work if there's only one row var
