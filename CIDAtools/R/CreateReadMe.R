@@ -21,19 +21,18 @@ CreateReadMe <- function(template = c('Admin', 'Background', 'Code', 'DataRaw',
   readme <- list()
 
   readme$Admin <- c("# Admin  ",
-                    "",
+                    "  ",
                     "This folder contains the scope of work and other relevant files from CIDA admin.  ",
-                    "",
+                    "  ",
                     "Details about the files:  ",
-                    "",
+                    "  ",
                     "File | Description",
                     "---|---------------------------------------------------------------------",
-                    "",
+                    "  ",
                     "")
   readme$Background <- c("# Background  ",
                          "  ",
-                         "This folder contains documents provided by investigators and the data analysis ",
-                         "plan.  ",
+                         "This folder contains documents provided by investigators and the data analysis plan.  ",
                          "  ",
                          "Details about the files:  ",
                          "  ",
@@ -48,42 +47,40 @@ CreateReadMe <- function(template = c('Admin', 'Background', 'Code', 'DataRaw',
                    "---|---------------------------------------------------------------------",
                    "  ")
   readme$DataProcessed <- c("# Processed Data  ",
-                            "",
+                            "  ",
                             "Scripts that created the files in this folder:  ",
-                            "",
-                            "File | Script",
-                            "---|---------------------------------------------------------------------",
-                            "")
+                            "  ",
+                            "File | Script | Description",
+                            "---|------------------|---------------------------------------------------",
+                            "  ")
   readme$DataRaw <- c("# Raw Data",
-
-                      "Details about the files:",
-
+                      "  ",
+                      "Details about the files:  ",
+                      "  ",
                       "File | Details",
                       "---|---------------------------------------------------------------------",
                       "    ",
-                      "")
+                      "  ")
 
   readme$Dissemination <- c("# Dissemination",
-
-                            "This folder contains abstracts, posters, papers and anything else produced  ",
-                            "for dissemination.  ",
-
-                            "Details about the files:",
-
+                            "  ",
+                            "This folder contains abstracts, posters, papers and anything else produced for dissemination.  ",
+                            "  ",
+                            "Details about the files:  ",
+                            "  ",
                             "File | Description",
                             "---|---------------------------------------------------------------------",
-                            "     ",
-                            "")
+                            "  ",
+                            "  ")
   readme$Reports <- c("# Reports",
-
+                      "  ",
                       "This folder contains the rmardown scripts and pdf output of reports.  ",
-
-                      "Details about the files:",
-
+                      "  ",
+                      "Details about the files:  ",
+                      "  ",
                       "File | Description",
                       "---|---------------------------------------------------------------------",
-                      "  ",
-                      "")
+                      "  ")
 
   # Function for creating the directory
   createDir <- function(x){
