@@ -1,6 +1,6 @@
 ---
 title: "Statistical Summary"
-author: "`r paste(getOptions(CIDAtools.analyst))`"
+author: "`r paste(CIDAtools::ProjectAnalyst())`"
 date: "`r paste(format(Sys.Date(), '%m/%d/%Y'))`"
 output: 
   pdf_document:
@@ -23,5 +23,5 @@ library(CIDAtools)
 
 # Methods  
 
-#  Results  
+# Results  
 

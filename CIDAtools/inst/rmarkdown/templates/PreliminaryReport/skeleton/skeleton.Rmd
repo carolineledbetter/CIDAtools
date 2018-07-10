@@ -11,8 +11,8 @@ knitr::opts_knit$set(root.dir = '../')
 ```
 
 **Project:**`r CIDAtools::ProjectName()`
-**PI:**`r CIDAtools::ProjectAnalyst()`  
-**Prepared By:**`r getOption(CIDAtools.analyst)`  
+**PI:**`r CIDAtools::ProjectPI()`  
+**Prepared By:**`r CIDAtools::ProjectAnalyst()`  
 **Date:** `r paste(format(Sys.Date(), '%m/%d/%Y'))`    
 
 ```{r setup, include=FALSE}
