@@ -13,6 +13,7 @@ nrowP(x)
 Number of rows with big.mark = , and trim = T
 }
 \description{
-Retrieve the number of rows in dataframe of matrix with commas inserted for nice reports.
+Retrieve the number of rows in dataframe of matrix with commas inserted for
+nice reports.
 }
 \keyword{prettynrow}
