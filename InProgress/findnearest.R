@@ -1,25 +1,26 @@
 findnearest <- function(x, y,
                         direction = c('both', 'ascending', 'descending')) {
   x <- x[order(x)]
-  y <- c(, y, Inf)
+  y <- y[order(y)]
   i_lower <- getlower(x, y)
-  i_upper <- length(y) + 1 - rev(getlower(rev(-x), rev(-y)))
+  i_upper <- getlower(rev(x), rev(y), upper = T)
   y_lower <- y[i_lower]
-  y_upper <- y[i_upper]
+  y_upper <- rev(y)[i_upper]
   lower_nearest <- x - y_lower < y_upper - probe
   i <- ifelse(lower_nearest, i_lower, i_upper) - 1
   i[i < 1 | i > length(target)] <- NA
   pairs <- list(x,y[])
 }
 
-getlower <- function(x, y){
+getlower <- function(x, y, upper = FALSE){
   n <- length(y)
   z <- c(y, x)
-  j <- i <- order(z)
+  j <- i <- order(z, decreasing = upper)
   j[j > n] <- -1
   x_max <- cummax(j)
-  return (x_max[x_max > n])
+  return (x_max[i > n])
 }
+
 
 
 
