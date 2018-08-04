@@ -5,11 +5,11 @@ findnearest <- function(x, y,
   i_lower <- getlower(x, y)
   i_upper <- getlower(rev(x), rev(y), upper = T)
   y_lower <- y[i_lower]
-  y_upper <- rev(y)[i_upper]
-  lower_nearest <- x - y_lower < y_upper - probe
-  i <- ifelse(lower_nearest, i_lower, i_upper) - 1
-  i[i < 1 | i > length(target)] <- NA
-  pairs <- list(x,y[])
+  y_upper <- rev(rev(y)[i_upper])
+  lower_nearest <- x - y_lower < y_upper - x
+  y[lower_nearest] <- y_lower[lower_nearest]
+  y[!lower_nearest] <- y_upper[!lower_nearest]
+  pairs <- list(x,y)
 }
 
 getlower <- function(x, y, upper = FALSE){
@@ -25,10 +25,20 @@ getlower <- function(x, y, upper = FALSE){
 
 
 mergeClose <- function(x, y, diff, nearBy,
-                       nearBy.x = nearBy, nearBy.y = nearBy, ...){
+                       nearBy.x = nearBy, nearBy.y = nearBy, 
+                       by = intersect(names(x), names(y)),
+                       by.x = by, by.y = by, bothdirections = TRUE,
+                       all = FALSE, all.x = all, all.y = all,
+                       sort = TRUE,
+                       suffixes = c(".x",".y"), no.dups = TRUE,
+                       incomparables = NULL, ...){
   if(!is.data.frame(x) | !is.data.frame(y))
     stop('x and y must be data.frames')
-  by_index <-
+  nlx <- as.list(seq_along(x))
+  names(nlx) <- names(x)
+  nearby_x <- data[, eval(substitute(nearBy.x), nlx, parent.frame()), drop = F]
+  nearby_y <- data[, eval(substitute(nearBy.x), nly, parent.frame()), drop = F]
+  
   ids <- levels(as.factor(x[, by.x]))
   dfx <- lapply(ids, function(i) subset(i, eval(substitute(by.x)) == i,
                                         select = c(eval(substitute(by.x)),
