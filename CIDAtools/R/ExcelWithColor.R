@@ -5,10 +5,19 @@
 #' each colour column specified.
 #'
 #' @param file the path to the file you intend to read. Can be an xls or xlsx format.
-#' @param colorColumns a vector of column numbers for which you want to read the colour
+#' @param colorColumns column numbers for which you want to read the colour,
+#' for multiple sheets pass a list for each sheet (see details). For no colour
+#' columns pass zero.
 #' @param sheet NULL(default) for all sheets otherwise a vector of sheet numbers
 #' or names to read.
 #' @param header should the 1st row be read in as a header? defaults to T.
+#' @details For \code{colourColumns} pass a list of numeric vectors for each
+#' sheet. For example for 2 sheets \code{colourColumns = list(c(1,2), c(3))} for
+#' columns 1 and 2 in the first sheet and 3 in the second. If the list of
+#' \code{colourColumns}
+#' is shorter than the sheets the remaining sheets will be assumed to have no
+#' colour columns. If the list of colour columns is longer only the first n
+#' elements will be used where n is the number of sheets with a warning.
 #' @return A data frame for one sheet or a list of data frames for multiple sheets
 #' @import xlsx
 #' @export
@@ -17,7 +26,10 @@
 read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
   if(!requireNamespace("xlsx", quietly = TRUE))
     stop("package 'xlsx' is required.")
-  if(!is.numeric(colorColumns)) stop('Please pass coloured column by number')
+  if(!is.list(colorColumns) & is.numeric(colorColumns))
+    colorColumns <- list(colorColumns)
+  if(!all(sapply(colorColumns, is.numeric)))
+    stop('Please pass coloured column by number')
   if(!is.null(sheet)){
     if(!is.numeric(sheet)&!is.character(sheet))
       stop('Sheets must be numbers or names')
@@ -26,7 +38,16 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
   sheets <- getSheets(wb)
   if(header) h <- -1 else h <- seq_along(rows)
   if(!is.null(sheet)) sheets <- sheets[sheet]
-  createData <- function(sheet){
+  if(length(colorColumns) < length(sheets)){
+    add <- length(sheets) - length(colorColumns)
+    colorColumns <- c(colorColumns, rep(list(0), add))
+  }
+  if(length(colorColumns) > length(sheets)){
+    colorColumns <- colorColumns[seq_along(sheets)]
+    warning(paste('Only the first', length(sheets),
+                  'elements of colourColumns have been used.'))
+  }
+  createData <- function(sheet, colorColumns){
     rows  <- getRows(sheet)
     head <- getCells(rows[-h])
     cells <- getCells(rows[h])
@@ -41,6 +62,7 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
       rgb <- paste(rgb, collapse = "")
       return(rgb)
     }
+    if(colorColumns[1] == 0) return(df)
     getColor <- function(col){
       styles <- sapply(getCells(rows[h], col), getCellStyle)
       colours <- sapply(styles, cellColor)
@@ -50,7 +72,7 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
     df <- cbind(df, colours)
     return(df)
   }
-  z <- lapply(sheets, createData)
+  z <- mapply(createData, sheets, colorColumns)
   if(length(sheets) == 1) return(z[[1]])
   return(z)
 }
