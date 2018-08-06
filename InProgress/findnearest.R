@@ -24,7 +24,7 @@ getlower <- function(x, y, upper = FALSE){
 
 
 
-mergeClose <- function(x, y, diff, nearBy,
+mergeClose <- function(x, y, nearBy,
                        nearBy.x = nearBy, nearBy.y = nearBy, 
                        by = intersect(names(x), names(y)),
                        by.x = by, by.y = by, bothdirections = TRUE,
@@ -36,34 +36,20 @@ mergeClose <- function(x, y, diff, nearBy,
     stop('x and y must be data.frames')
   nlx <- as.list(seq_along(x))
   names(nlx) <- names(x)
-  nearby_x <- data[, eval(substitute(nearBy.x), nlx, parent.frame()), drop = F]
-  nearby_y <- data[, eval(substitute(nearBy.x), nly, parent.frame()), drop = F]
+  nearby_x <- x[, eval(substitute(nearBy.x), nlx, parent.frame()), drop = F]
+  nly <- as.list(seq_along(y))
+  names(nly) <- names(y)
+  nearby_y <- y[, eval(substitute(nearBy.x), nly, parent.frame()), drop = F]
+  by <- setdiff(by, c(names(nearby_x), names(nearby_y)))
   
-  ids <- levels(as.factor(x[, by.x]))
-  dfx <- lapply(ids, function(i) subset(i, eval(substitute(by.x)) == i,
-                                        select = c(eval(substitute(by.x)),
-                                                   eval(substitute())))
 
 
-  # if(!identical(class(x[, nearBy.x]), class(y[, nearBy.y])))
-  #   stop('nearBy.x and nearBy.y must be the same class')
-  # nb <- x[, nearBy.x]
-  # UseMethod('mergeClose', nb)
+  
+  # get dataframe for row variables
+  nl <- as.list(seq_along(data))
+  names(nl) <- names(data)
+  rows <- data[, eval(substitute(rowvars), nl, parent.frame()), drop = F]
 }
-
-mergeClose.POSIXt <- function(x, y, diff, nearBy,
-                              nearBy.x = nearBy, nearBy.y = nearBy,
-                              by = setdiff(intersect(names(x), names(y)),
-                                           nearBy),
-                              by.x = by, by.y = by, bothdirections = TRUE,
-                              all = FALSE, all.x = all, all.y = all,
-                              sort = TRUE,
-                              suffixes = c(".x",".y"), no.dups = TRUE,
-                              incomparables = NULL, ...){
-  print(nearBy)
-  print(by)
-}
-
 
 
 
