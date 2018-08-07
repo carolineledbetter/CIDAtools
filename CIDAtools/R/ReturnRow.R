@@ -4,6 +4,7 @@
 #' @param x the row variable
 #' @param y the column variable
 #' @param p incl_pvalue from Table1
+#' @param ... arguments passed to S3 methods
 #'
 #' @importFrom stats aggregate quantile anova chisq.test fisher.test lm
 

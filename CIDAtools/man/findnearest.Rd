@@ -18,10 +18,6 @@ getlower(x, y, upper = FALSE)
 descending for only matches after x.}
 
 \item{upper}{upper value?}
-
-\item{x}{a vector to find matches for}
-
-\item{y}{a vector to find the matches}
 }
 \value{
 a list of length 2 with a y matched to every x, note if direction =

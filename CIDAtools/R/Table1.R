@@ -54,7 +54,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               rowvar_names = NULL, incl_missing = T,
                               incl_pvalues = F,
                               emphasis = c('b', 's', 'n'),
-                              MedIQR = NULL){
+                              MedIQR = NULL, ...){
   # set the home calling environment
   thisisthehomecallingenvironment <- T
 

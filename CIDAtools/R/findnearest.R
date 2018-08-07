@@ -50,8 +50,6 @@ findnearest <- function(x, y,
 #' Internal function for findnearest
 #'
 #'
-#' @param x a vector to find matches for
-#' @param y a vector to find the matches
 #' @param upper upper value?
 #' @return  indexes of y for each x
 #' @describeIn findnearest function for finding lower(upper) value

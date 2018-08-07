@@ -9,7 +9,7 @@ Table1(data, ...)
 
 \method{Table1}{data.frame}(data, rowvars, colvar, sigfig = 4,
   rowvar_names = NULL, incl_missing = T, incl_pvalues = F,
-  emphasis = c("b", "s", "n"), MedIQR = NULL)
+  emphasis = c("b", "s", "n"), MedIQR = NULL, ...)
 }
 \arguments{
 \item{data}{the data frame or design object of the data you which to
