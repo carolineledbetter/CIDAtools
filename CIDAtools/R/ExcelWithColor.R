@@ -19,7 +19,6 @@
 #' colour columns. If the list of colour columns is longer only the first n
 #' elements will be used where n is the number of sheets with a warning.
 #' @return A data frame for one sheet or a list of data frames for multiple sheets
-#' @import xlsx
 #' @export
 #' @keywords Excel colour color xlsx
 #'
@@ -34,9 +33,8 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
     if(!is.numeric(sheet)&!is.character(sheet))
       stop('Sheets must be numbers or names')
   }
-  wb <- loadWorkbook(file)
-  sheets <- getSheets(wb)
-  if(header) h <- -1 else h <- seq_along(rows)
+  wb <- xlsx::loadWorkbook(file)
+  sheets <- xlsx::getSheets(wb)
   if(!is.null(sheet)) sheets <- sheets[sheet]
   if(length(colorColumns) < length(sheets)){
     add <- length(sheets) - length(colorColumns)
@@ -48,13 +46,14 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
                   'elements of colourColumns have been used.'))
   }
   createData <- function(sheet, colorColumns){
-    rows  <- getRows(sheet)
-    head <- getCells(rows[-h])
-    cells <- getCells(rows[h])
-    df <- data.frame(matrix(sapply(cells, getCellValue),
+    rows <- xlsx::getRows(sheet)
+    if(header) h <- -1 else h <- seq_along(rows)
+    head <- xlsx::getCells(rows[-h])
+    cells <- xlsx::getCells(rows[h])
+    df <- data.frame(matrix(sapply(cells, xlsx::getCellValue),
                             nrow = length(rows) - header,
                             byrow = T))
-    if(!is.null(head)) names(df) <- sapply(head, getCellValue)
+    if(!is.null(head)) names(df) <- sapply(head, xlsx::getCellValue)
 
     cellColor <- function(style) {
       fg  <- style$getFillForegroundXSSFColor()
@@ -64,7 +63,7 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
     }
     if(colorColumns[1] == 0) return(df)
     getColor <- function(col){
-      styles <- sapply(getCells(rows[h], col), getCellStyle)
+      styles <- sapply(xlsx::getCells(rows[h], col), xlsx::getCellStyle)
       colours <- sapply(styles, cellColor)
     }
     colours <- lapply(colorColumns, getColor)
