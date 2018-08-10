@@ -42,6 +42,8 @@ findnearest <- function(x, y,
     return(list(x, y_upper))
   }
   lower_nearest <- x - y_lower < y_upper - x
+  y <- vector(length = length(y_lower))
+  class(y) <- class(y_lower)
   y[lower_nearest] <- y_lower[lower_nearest]
   y[!lower_nearest] <- y_upper[!lower_nearest]
   return(list(x,y))
@@ -50,8 +52,6 @@ findnearest <- function(x, y,
 #' Internal function for findnearest
 #'
 #'
-#' @param x a vector to find matches for
-#' @param y a vector to find the matches
 #' @param upper upper value?
 #' @return  indexes of y for each x
 #' @describeIn findnearest function for finding lower(upper) value
