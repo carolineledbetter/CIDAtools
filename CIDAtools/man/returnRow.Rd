@@ -25,6 +25,8 @@ returnRow(x, ...)
 \arguments{
 \item{x}{the row variable}
 
+\item{...}{arguments passed to S3 methods}
+
 \item{y}{the column variable}
 
 \item{p}{incl_pvalue from Table1}
