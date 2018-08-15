@@ -6,6 +6,7 @@
 \alias{returnRow.numeric}
 \alias{returnRow.character}
 \alias{returnRow.MedIQR}
+\alias{returnRow.integer}
 \alias{returnRow.logical}
 \title{These are internal functions for returning the correct rows (based on class)
 for table 1}
@@ -19,6 +20,8 @@ returnRow(x, ...)
 \method{returnRow}{character}(x, y, p)
 
 \method{returnRow}{MedIQR}(x, y, p)
+
+\method{returnRow}{integer}(x, y, p)
 
 \method{returnRow}{logical}(x, y, p)
 }
@@ -45,6 +48,8 @@ for table 1
 runs returnRow.factor
 
 \item \code{MedIQR}: methods for numerics with request for Median and IQR
+
+\item \code{integer}: method for integers - returns Median and 25%-75%
 
 \item \code{logical}: method for logicals - converts to factor and then
 runs returnRow.factor (with True as the first level)

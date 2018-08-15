@@ -139,6 +139,12 @@ returnRow.MedIQR <- function(x, y, p){
   return(row)
 }
 
+#' @describeIn returnRow method for integers - returns Median and 25%-75%
+#' @export
+
+returnRow.integer <- function(x, y, p){
+  returnRow.MedIQR(x, y, p)
+}
 
 #' @describeIn returnRow method for logicals - converts to factor and then
 #' runs returnRow.factor (with True as the first level)
