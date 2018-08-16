@@ -10,7 +10,7 @@ Table1(data, ...)
 \method{Table1}{data.frame}(data, rowvars, colvar, sigfig = 4,
   rowvar_names = NULL, incl_missing = TRUE, incl_pvalues = FALSE,
   emphasis = c("b", "s", "n"), MedIQR = NULL, asTable = TRUE,
-  lineBreaks = T, ...)
+  lineBreaks = T, tight = TRUE, verbose = FALSE, ...)
 }
 \arguments{
 \item{data}{the data frame or design object of the data you which to
@@ -21,7 +21,8 @@ characterize}
 \item{rowvars}{A vector of row positions or names.}
 
 \item{colvar}{The position or name of the variable to stratify by, set
-to NULL for no stratification.(p values cannot be returned if NULL)}
+to \code{NULL} for no stratification.(p values cannot be returned if
+\code{NULL})}
 
 \item{sigfig}{The number of significant digits to use for mean, sd, median,
 and IQR.}
@@ -29,21 +30,26 @@ and IQR.}
 \item{rowvar_names}{An optional vector of row names to be used for
 variables. Must be the same length and in the same order as rowvars.}
 
-\item{incl_missing}{Set to T to include missing values (default)}
+\item{incl_missing}{Set to \code{TRUE} to include missing values (default)}
 
-\item{incl_pvalues}{Set to T to include p values (p values are only
-calculated on non missing observations) (default = FALSE)}
+\item{incl_pvalues}{Set to \code{TRUE} to include p values (p values are only
+calculated on non missing observations) (default = \code{FALSE})}
 
-\item{emphasis}{Set to 's' for to indent categories for categorical values,
-'b' to bold just variable names, and 'n' for no emphasis.}
+\item{emphasis}{Set to \code{'s'} for to indent categories for categorical values,
+\code{'b'} to bold just variable names, and \code{'n'} for no emphasis.}
 
 \item{MedIQR}{optional vector of continuous variables to return median and
 IQR instead of mean and SD.}
 
-\item{asTable}{should a table (true) or a matrix be returned}
+\item{asTable}{should a table (\code{TRUE}) or a matrix be returned}
 
 \item{lineBreaks}{should the N be printed on a seperate line from the
-categories. default is True (see details)}
+categories. default is \code{TRUE} (see details)}
+
+\item{tight}{if \code{TRUE} (default) no spaces between numbers and
+parenthesis}
+
+\item{verbose}{should both levels of binary variables be printed.}
 }
 \value{
 a table/matrix with N and percentages for categorical variables, mean
@@ -71,7 +77,7 @@ If a design object is passed in lieu of a data frame, weighted numbers
 using the survey package are provided.
 (The survey package must be installed in this case.)
 
-To use the lineBreaks pass the keep.line.breaks = T argument to panderOptions.
+To use the lineBreaks use \code{panderOptions('keep.line.breaks', TRUE)}
 }
 \section{Methods (by class)}{
 \itemize{

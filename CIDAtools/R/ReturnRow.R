@@ -26,6 +26,8 @@ returnRow.factor <- function(x, y, p){
   # include missing? from home calling environment
   incl_missing <- eval(substitute(incl_missing), parent.frame(home_env))
   if(incl_missing) x <- addNA(x, ifany = T)
+  # verbose from home calling environment
+  verbose <- eval(substitute(verbose), parent.frame(home_env))
 
   # get N and pct and paste together
   N <- table(x, y)
@@ -40,7 +42,7 @@ returnRow.factor <- function(x, y, p){
   table <- rbind(c(name, rep('', ncol(N))), table)
   colnames(table) <- NULL
   n_row <- nrow(N)
-  if(n_row == 2){
+  if(n_row == 2 & !verbose){
     table <- table[-3, ]
     n_row <- n_row - 1
   }

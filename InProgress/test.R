@@ -31,6 +31,6 @@ test$l[c(1, 5, 7)] <- NA
 
 Table1(test, c(m, p, q, x, z, y, w), 'n', incl_missing = T, incl_pvalues = T, 
        emphasis = 's', MedIQR = 'z') -> tbl
-Table1(test, c(m, z, y, 5, x), 'n')
+Table1(test, c(m, z, y, 5, x), 'n', tight = F, verbose = T)
 
 

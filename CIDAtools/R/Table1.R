@@ -10,21 +10,25 @@
 #' characterize
 #' @param rowvars A vector of row positions or names.
 #' @param colvar The position or name of the variable to stratify by, set
-#' to NULL for no stratification.(p values cannot be returned if NULL)
+#' to \code{NULL} for no stratification.(p values cannot be returned if
+#' \code{NULL})
 #' @param sigfig The number of significant digits to use for mean, sd, median,
 #' and IQR.
 #' @param rowvar_names An optional vector of row names to be used for
 #' variables. Must be the same length and in the same order as rowvars.
-#' @param incl_missing Set to T to include missing values (default)
-#' @param incl_pvalues Set to T to include p values (p values are only
-#' calculated on non missing observations) (default = FALSE)
-#' @param emphasis Set to 's' for to indent categories for categorical values,
-#' 'b' to bold just variable names, and 'n' for no emphasis.
+#' @param incl_missing Set to \code{TRUE} to include missing values (default)
+#' @param incl_pvalues Set to \code{TRUE} to include p values (p values are only
+#' calculated on non missing observations) (default = \code{FALSE})
+#' @param emphasis Set to \code{'s'} for to indent categories for categorical values,
+#' \code{'b'} to bold just variable names, and \code{'n'} for no emphasis.
 #' @param MedIQR optional vector of continuous variables to return median and
 #' IQR instead of mean and SD.
-#' @param asTable should a table (true) or a matrix be returned
+#' @param asTable should a table (\code{TRUE}) or a matrix be returned
 #' @param lineBreaks should the N be printed on a seperate line from the
-#' categories. default is True (see details)
+#' categories. default is \code{TRUE} (see details)
+#' @param tight if \code{TRUE} (default) no spaces between numbers and
+#' parenthesis
+#' @param verbose should both levels of binary variables be printed.
 #' @param ... Arguments passed through methods to table 1.
 #' @return  a table/matrix with N and percentages for categorical variables, mean
 #' and sd for continuous ones, and median and 25th and 75th percentile for integers.
@@ -43,7 +47,7 @@
 #' using the survey package are provided.
 #' (The survey package must be installed in this case.)
 #'
-#' To use the lineBreaks pass the keep.line.breaks = T argument to panderOptions.
+#' To use the lineBreaks use \code{panderOptions('keep.line.breaks', TRUE)}
 #' @keywords table1 tableone characteristic
 #' @export
 #'
@@ -63,7 +67,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               incl_pvalues = FALSE,
                               emphasis = c('b', 's', 'n'),
                               MedIQR = NULL, asTable = TRUE, lineBreaks = T,
-                              ...){
+                              tight = TRUE, verbose = FALSE, ...){
   # set the home calling environment
   thisisthehomecallingenvironment <- T
 
@@ -103,7 +107,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
     add_miss <- sapply(rows[!is.na(y), ], function(x) any(is.na(x)))
     n_levs <- n_levs + add_miss
     }
-  n_levs[n_levs != 2] <- 3
+  if(!verbose) n_levs[n_levs != 2] <- 3
 
   # sort rows by class, want MedIQR last...
   cls <- sapply(lapply(rows, class), `[[`, 1)
@@ -144,6 +148,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
 
   # get table
   tbl <- lapply(rows, returnRow, y = y, p = incl_pvalues)
+  if(!tight) tbl <- lapply(tbl, gsub, pattern = '\\(', replacement = ' \\(')
 
   # set class vector to same order as row
   cls <- cls[ord]
