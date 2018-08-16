@@ -22,13 +22,15 @@
 #' 'b' to bold just variable names, and 'n' for no emphasis.
 #' @param MedIQR optional vector of continuous variables to return median and
 #' IQR instead of mean and SD.
-#' @asTable should a table (true) or a matrix be returned
+#' @param asTable should a table (true) or a matrix be returned
+#' @param lineBreaks should the N be printed on a seperate line from the
+#' categories. default is True (see details)
 #' @param ... Arguments passed through methods to table 1.
 #' @return  a table/matrix with N and percentages for categorical variables, mean
 #' and sd for continuous ones, and median and 25th and 75th percentile for integers.
 #' If variables are passed via the MedIQR argument,
 #' median and 25th and 75th percentile is calculated instead for those variable.
-#'  In addition, only
+#' @details  Only
 #' the 1st factor of binary categorical variables is displayed. All
 #' determinations of categorical,
 #' binary, or continuous are performed automatically.
@@ -40,6 +42,8 @@
 #' If a design object is passed in lieu of a data frame, weighted numbers
 #' using the survey package are provided.
 #' (The survey package must be installed in this case.)
+#'
+#' To use the lineBreaks pass the keep.line.breaks = T argument to panderOptions.
 #' @keywords table1 tableone characteristic
 #' @export
 #'
@@ -58,7 +62,8 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
                               rowvar_names = NULL, incl_missing = TRUE,
                               incl_pvalues = FALSE,
                               emphasis = c('b', 's', 'n'),
-                              MedIQR = NULL, asTable = TRUE, ...){
+                              MedIQR = NULL, asTable = TRUE, lineBreaks = T,
+                              ...){
   # set the home calling environment
   thisisthehomecallingenvironment <- T
 
@@ -155,6 +160,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
 
   # Make column headers
   Nequals <- ' \\\n N = '
+  if(!lineBreaks) Nequals <- ' N = '
   if (exists('dummy', inherits = F)) Nequals <- 'N = '
 
   Stratified_N <- table(y)
