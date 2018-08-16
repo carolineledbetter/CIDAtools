@@ -71,7 +71,7 @@ read.xlsx.withcolor <- function(file, colorColumns, sheet = NULL, header = T){
     df <- cbind(df, colours)
     return(df)
   }
-  z <- mapply(createData, sheets, colorColumns)
+  z <- mapply(createData, sheets, colorColumns, SIMPLIFY = F)
   if(length(sheets) == 1) return(z[[1]])
   return(z)
 }
