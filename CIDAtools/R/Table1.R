@@ -22,15 +22,19 @@
 #' 'b' to bold just variable names, and 'n' for no emphasis.
 #' @param MedIQR optional vector of continuous variables to return median and
 #' IQR instead of mean and SD.
+#' @asTable should a table (true) or a matrix be returned
 #' @param ... Arguments passed through methods to table 1.
-#' @return  a matrix with N and percentages for categorical variables and mean
-#' and sd for continuous ones. If variables are passed via the MedIQR argument,
-#' median and IQR is calculated instead for those variable. In addition, only
-#' the 2nd factor of binary categorical variables is displayed. All
+#' @return  a table/matrix with N and percentages for categorical variables, mean
+#' and sd for continuous ones, and median and 25th and 75th percentile for integers.
+#' If variables are passed via the MedIQR argument,
+#' median and 25th and 75th percentile is calculated instead for those variable.
+#'  In addition, only
+#' the 1st factor of binary categorical variables is displayed. All
 #' determinations of categorical,
 #' binary, or continuous are performed automatically.
 #' Character variables are converted to factors. Variables are displayed in
-#' the following order: binary, non-binary categorical, and continuous.
+#' the following order: binary, non-binary categorical, continuous, and integers
+#' + continuous variables with median and IQR.
 #' If no stratification variable is provided, summary statistics on the
 #' entire sample are provided. No p-values can be provided in this case.
 #' If a design object is passed in lieu of a data frame, weighted numbers
@@ -51,10 +55,10 @@ Table1 <- function(data, ...){
 #' @export
 
 Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
-                              rowvar_names = NULL, incl_missing = T,
-                              incl_pvalues = F,
+                              rowvar_names = NULL, incl_missing = TRUE,
+                              incl_pvalues = FALSE,
                               emphasis = c('b', 's', 'n'),
-                              MedIQR = NULL, ...){
+                              MedIQR = NULL, asTable = TRUE, ...){
   # set the home calling environment
   thisisthehomecallingenvironment <- T
 
@@ -99,6 +103,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   # sort rows by class, want MedIQR last...
   cls <- sapply(lapply(rows, class), `[[`, 1)
   cls[cls %in% c('character', 'logical')] <- 'factor'
+  cls[cls %in% c('integer')] <- 'zzz'
   cls[cls == 'MedIQR'] <- 'zzz'
 
   # ord won't work if there's only one row var
@@ -157,6 +162,7 @@ Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
   Stratified_N <- paste0(levels(y), Nequals, Stratified_N)
   Header <- c('', Stratified_N, p_col)
   tbl <- rbind(Header, tbl)
+  if(asTable) tbl <- as.table(tbl)
   rownames(tbl) <- NULL
   colnames(tbl) <- NULL
   return(tbl)
