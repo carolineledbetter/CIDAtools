@@ -23,6 +23,7 @@ findnearest <- function(x, y,
   direction <- match.arg(direction)
   a <- switch(direction, both = T, ascending = T, descending = F)
   d <- switch(direction, both = T, ascending = F, descending = T)
+  i <- order(x)
   x <- x[order(x)]
   y <- y[order(y)]
   if(a) {
@@ -46,7 +47,7 @@ findnearest <- function(x, y,
   class(y) <- class(y_lower)
   y[lower_nearest] <- y_lower[lower_nearest]
   y[!lower_nearest] <- y_upper[!lower_nearest]
-  return(list(x,y))
+  return(list(x[i],y[i]))
 }
 
 #' Internal function for findnearest

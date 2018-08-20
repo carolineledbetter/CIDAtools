@@ -137,4 +137,25 @@ removeAnalyst <- function(quiet = F){
   return(TRUE)
 }
 
-
+#' Convert Interval Notation
+#'
+#' Converts a vector from Interval Notation to less than equal to, less than,
+#' etc.
+#'
+#' @param x a character vector to be converted
+#'
+#' @return a character vector of same length of x converted
+#' @keywords interval notation
+#' @export
+#'
+convertIntervalNotation <- function(x){
+  if(!is.character(x)) stop('x must be a character vector')
+  x <- gsub('\\(-Inf, ', '', x)
+  x <- gsub(',Inf\\)', '', x)
+  x <- gsub('\\[', '\u2265', x)
+  x <- gsub('([0-9]+)\\]', '\u2264\\1', x)
+  x <- gsub(',', ' - ', x)
+  x <- gsub("\\(", '>', x)
+  x <- gsub("([0-9]+)\\)", "<\\1", x)
+  return(x)
+}
