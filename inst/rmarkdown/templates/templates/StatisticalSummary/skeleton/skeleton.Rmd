@@ -1,0 +1,36 @@
+---
+title: "Statistical Summary"
+author: "`r paste(CIDAtools::ProjectAnalyst())`"
+date: "`r paste(format(Sys.Date(), '%B %d, %Y'))`"
+output:
+  word_document:
+    reference_docx: P:/CBC/Shared/Work Environment/Committees/Project Management Committee/Report Templates/word_style_reference.docx
+  html_document: 
+    df_print: paged
+  pdf_document: 
+    fig_caption: yes
+header-includes: \usepackage{fancyhdr} \usepackage{graphicx} \usepackage{eurosym}
+  \usepackage{booktabs,xcolor} \pagestyle{fancy} \fancyhf{} \addtolength{\headheight}{1.0cm}
+  \rfoot{Page \thepage} \fancypagestyle{plain}{\pagestyle{fancy}}
+  \rhead{\today} \lhead{\includegraphics[width=10cm]{P:/CBC/Shared/Admin - Templates/CIDA_header.jpg}}
+  
+geometry: margin=1in
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+knitr::opts_knit$set(root.dir = '../')
+```
+
+```{r setup, include=FALSE}
+# load(file = '')
+library(pander)
+library(CIDAtools)
+```
+
+## Introduction  
+
+## Statistical Methods  
+
+## Results  
+
