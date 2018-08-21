@@ -1,10 +1,14 @@
 ---
 geometry: margin=0.6in
 output:
-  html_document:
+  html_document: 
     df_print: paged
-  pdf_document:
+  pdf_document: 
     fig_caption: yes
+header-includes: \usepackage{fancyhdr} \usepackage{graphicx} \usepackage{eurosym}
+  \usepackage{booktabs,xcolor} \pagestyle{fancy} \fancyhf{} \addtolength{\headheight}{1.0cm}
+  \rfoot{Page \thepage} \fancypagestyle{plain}{\pagestyle{fancy}}
+  \rhead{\today} \lhead{\includegraphics[width=10cm]{P:/CBC/Shared/Admin - Templates/CIDA_header.jpg}}
 ---
 
 ```{r global_options, include=FALSE}
@@ -16,7 +20,8 @@ knitr::opts_knit$set(root.dir = '../')
 **Project:** `r CIDAtools::ProjectName()`    
 **PI:** `r CIDAtools::ProjectPI()`  
 **Prepared By:** `r CIDAtools::ProjectAnalyst()`  
-**Date:** `r paste(format(Sys.Date(), '%m/%d/%Y'))`  
+**Date:** `r paste(format(Sys.Date(), '%B %d, %Y'))`
+
 
 ```{r setup, include=FALSE}
 # set your data
