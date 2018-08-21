@@ -2,8 +2,17 @@
 
 ![CIDAtools](inst/figures/CIDAtoolshex.png)
 
-`r devtools::install_github('ledbettc/CIDAtools')`
+`devtools::install_github('ledbettc/CIDAtools')`
 
+Example of header snippet using Project Data:
+```
+snippet header
+	###########################################
+	# Project: `r CIDAtools::ProjectName()`
+	# Author: `r CIDAtools::ProjectAnalyst()`
+	# Date: `r paste(format(Sys.Date(), '%m/%d/%Y'))`
+	# #########################################
+```
 This package contains numerous templates and tools to make life at CIDA (part 
 of the Colorado School of Public Health) happier and more efficient!
 
