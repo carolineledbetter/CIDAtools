@@ -6,10 +6,13 @@
 #' @param x a vector to find matches for
 #' @param y a vector to find the matches
 #' @param direction default = both, ascending for only y matches before x and
-#' descending for only matches after x.
+#' descending for only y matches after x.
+#' @param returnIndex should an index of the mathced y values be returned
+#' instead of the matched list.
 #' @return  a list of length 2 with a y matched to every x, note if direction =
 #' 'ascending' or 'descending', NAs will be returned for x values with no y
-#' values before or after, respectively.
+#' values before or after, respectively. OR an index of matched y values if
+#' \code{returnIndex = TRUE}.
 #' @keywords findnearest
 #' @references This function borrowed heavily from this stack exchange post:
 #' https://stats.stackexchange.com/questions/161379/quickly-finding-nearest-time-observation
@@ -19,36 +22,43 @@
 
 
 findnearest <- function(x, y,
-                        direction = c('both', 'ascending', 'descending')) {
+                        direction = c('both', 'ascending', 'descending'),
+                        returnIndex = FALSE) {
   direction <- match.arg(direction)
   a <- switch(direction, both = T, ascending = T, descending = F)
   d <- switch(direction, both = T, ascending = F, descending = T)
-  i <- order(x)
+  i <- order(order(x))
+  if(returnIndex) j <- order(order(y))
   x <- x[order(x)]
   y <- y[order(y)]
-  if(a) {
-    i_lower <- getlower(x, y)
-    y_lower <- y[i_lower]
-  }
+  if(a) i_lower <- getlower(x, y)
+
   if(direction == 'ascending') {
-    y_lower[y_lower > x] <- NA
-    return(list(x, y_lower))
+    i_lower[y[i_lower] > x] <- NA
+    if(returnIndex) return(match(i_lower, j)[i])
+    return(list(x[i], y[i_lower][i]))
   }
   if(d) {
     i_upper <- getlower(rev(x), rev(y), upper = T)
-    y_upper <- rev(rev(y)[i_upper])
+    i_upper <- rev(rev(seq_along(y))[i_upper])
   }
   if(direction == 'descending') {
-    y_upper[y_upper < x] <- NA
-    return(list(x, y_upper))
+    i_upper[y[i_upper] < x] <- NA
+    if(returnIndex) return(i_upper[i])
+    return(list(x[i], y[i_upper][i]))
   }
-  lower_nearest <- x - y_lower < y_upper - x
-  y <- vector(length = length(y_lower))
-  class(y) <- class(y_lower)
-  y[lower_nearest] <- y_lower[lower_nearest]
-  y[!lower_nearest] <- y_upper[!lower_nearest]
+  lower_nearest <- x - y[i_lower] < y[i_upper] - x
+  y_i <- i_lower
+  y_i[!lower_nearest] <- i_upper[!lower_nearest]
+  if(returnIndex) {
+    y_i <- match(y_i, j)
+    return(y_i[i])
+    }
+  y <- y[y_i]
   return(list(x[i],y[i]))
 }
+
+
 
 #' Internal function for findnearest
 #'
@@ -66,5 +76,6 @@ getlower <- function(x, y, upper = FALSE){
   x_max[x_max == -1] <- 1
   return (x_max[i > n])
 }
+
 
 
