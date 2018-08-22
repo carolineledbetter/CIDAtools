@@ -5,7 +5,8 @@
 \alias{getlower}
 \title{Find the nearest observation to another observation}
 \usage{
-findnearest(x, y, direction = c("both", "ascending", "descending"))
+findnearest(x, y, direction = c("both", "ascending", "descending"),
+  returnIndex = FALSE)
 
 getlower(x, y, upper = FALSE)
 }
@@ -15,14 +16,18 @@ getlower(x, y, upper = FALSE)
 \item{y}{a vector to find the matches}
 
 \item{direction}{default = both, ascending for only y matches before x and
-descending for only matches after x.}
+descending for only y matches after x.}
+
+\item{returnIndex}{should an index of the mathced y values be returned
+instead of the matched list.}
 
 \item{upper}{upper value?}
 }
 \value{
 a list of length 2 with a y matched to every x, note if direction =
 'ascending' or 'descending', NAs will be returned for x values with no y
-values before or after, respectively.
+values before or after, respectively. OR an index of matched y values if
+\code{returnIndex = TRUE}.
 
 indexes of y for each x
 }
