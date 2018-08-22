@@ -44,7 +44,7 @@ findnearest <- function(x, y,
   }
   if(direction == 'descending') {
     i_upper[y[i_upper] < x] <- NA
-    if(returnIndex) return(i_upper[i])
+    if(returnIndex) return(match(i_upper, j)[i])
     return(list(x[i], y[i_upper][i]))
   }
   lower_nearest <- x - y[i_lower] < y[i_upper] - x
