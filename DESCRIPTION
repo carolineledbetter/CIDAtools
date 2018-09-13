@@ -3,7 +3,7 @@ Title: This package contains tools for CIDA projects
 Version: 0.0.1.3
 Authors@R: person("Caroline", "Ledbetter", email = "caroline.ledbetter@ucdenver.edu", role = c("aut", "cre"))
 Description: This package contains the numerous templates and tools to make life at CIDA (part of the Colorado School of Public Health) happier and more efficient!
-Depends: R (>= 3.3.0.0), stats
+Depends: R (>= 3.4.0.0), stats
 Suggests: git2r, 
           survey, 
           xlsx

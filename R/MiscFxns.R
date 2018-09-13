@@ -159,3 +159,25 @@ convertIntervalNotation <- function(x){
   x <- gsub("([0-9]+)\\)", "<\\1", x)
   return(x)
 }
+
+#' Round and don't drop trailing zeros
+#'
+#' Shorter wrapper for format(x, digits = n, nsmall = n)
+#'
+#' @param x numeric to be formatted
+#' @param n number of digits for nsmall
+#'
+#' @return a character vector of same length of x converted
+#' @details should not be used unless digits after a decimal are needed.
+#' Note for numbers with leading zeros (ie. 0.0349) you will get one more
+#' decimal place than n. (ie. \code{Round(O.0349, 2)} will return
+#' \code{0.035})
+#'
+#' @keywords interval notation
+#' @export
+#'
+#'
+Round <- function(x, n){
+  format(x, digits = n, nsmall = n)
+}
+
