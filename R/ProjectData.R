@@ -1,6 +1,7 @@
 #' Set Project Analyst
 #'
-#' This function allows you to set the  project analyst. This will overwrite the current value if exists.
+#' This function allows you to set the  project analyst.
+#' This will overwrite the current value if exists.
 #'
 #' @param AnalystName A string containing the analyst name
 #' @return A message stating the name has been changed.
@@ -19,7 +20,8 @@ SetProjectAnalyst <- function(AnalystName){
 
 #' Set Project Name
 #'
-#' This function allows you to set the  project name. This will overwrite the current value if exists.
+#' This function allows you to set the  project name. This will overwrite the
+#' current value if exists.
 #'
 #' @param ProjectName A string containing the analyst name
 #' @return A message stating the name has been changed.
@@ -38,7 +40,8 @@ SetProjectName <- function(ProjectName){
 
 #' Set PI Name
 #'
-#' This function allows you to set the Project's PI. This will overwrite the current value if exists.
+#' This function allows you to set the Project's PI. This will overwrite the
+#' current value if exists.
 #'
 #' @param PI A string containing the analyst name
 #' @return A message stating the name has been changed.
@@ -58,7 +61,8 @@ SetProjectPI <- function(PI){
 #' Get Project Analyst
 #'
 #' This function returns the Project Analyst Name. If none exists, it
-#' will return the value of CIDAtools.analyst option or blank if the option is not set.
+#' will return the value of CIDAtools.analyst option or blank if the option
+#' is not set.
 #'
 #' @return A character string with the analyst name
 #' @keywords options Analyst ProjData

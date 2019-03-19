@@ -26,12 +26,6 @@ Label: Optional: Set Remote Origin
 Default:
 Position: Right
 
-Parameter: git_lfs
-Widget:CheckboxInput
-Label: Git LFS for Data?
-Default: On
-Position: Left
-
 Parameter:initcommit
 Widget:CheckboxInput
 Label:Initial Commit with ReadMe?
@@ -39,9 +33,10 @@ Default: On
 Position:Left
 
 Parameter: nodata
-Widget: CheckboxInput
+Widget: SelectInput
 Label: Exclude Data from git
-Default: Off
+Fields: No, By File Type, By Location
+Default: By Location
 Position: Left
 
 Parameter: meta
