@@ -134,6 +134,7 @@ proj_setup <- function(path, ...){
         if(initcommit) {
           git2r::add(repo, 'ReadMe.md')
           git2r::commit(repo, message = 'Initial Commit')
+          git2r::push(repo, 'origin', 'refs/heads/master')
         }
       }
     }
