@@ -128,6 +128,7 @@ proj_setup <- function(path, ...){
       if (!requireNamespace('git2r', quietly = T)) {
         warning('git2r is required for git initialization')
       } else{
+        tryCatch({
         writeLines(gitignore, con = file.path(path, '.gitignore'))
         repo<- git2r::init(path)
         if(remote_origin != '') git2r::remote_add(repo, 'origin', remote_origin)
@@ -136,6 +137,10 @@ proj_setup <- function(path, ...){
           git2r::commit(repo, message = 'Initial Commit')
           git2r::push(repo, 'origin', 'refs/heads/master')
         }
+        }, error = function(e){
+          paste0('There was an error setting up the git repo',
+                 e)
+        })
       }
     }
 
