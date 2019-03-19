@@ -13,7 +13,8 @@ SetProjectPI(PI)
 A message stating the name has been changed.
 }
 \description{
-This function allows you to set the Project's PI. This will overwrite the current value if exists.
+This function allows you to set the Project's PI. This will overwrite the
+current value if exists.
 }
 \keyword{PI}
 \keyword{ProjData}

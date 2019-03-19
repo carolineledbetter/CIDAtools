@@ -13,7 +13,8 @@ SetProjectName(ProjectName)
 A message stating the name has been changed.
 }
 \description{
-This function allows you to set the  project name. This will overwrite the current value if exists.
+This function allows you to set the  project name. This will overwrite the
+current value if exists.
 }
 \keyword{ProjData}
 \keyword{ProjectName}
