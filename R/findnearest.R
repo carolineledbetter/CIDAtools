@@ -48,6 +48,8 @@ findnearest <- function(x, y,
     return(list(x[i], y[i_upper][i]))
   }
   lower_nearest <- x - y[i_lower] < y[i_upper] - x
+  lower_nearest[is.na(i_upper)] <- T
+  lower_nearest[is.na(i_lower)] <- F
   y_i <- i_lower
   y_i[!lower_nearest] <- i_upper[!lower_nearest]
   if(returnIndex) {
