@@ -130,12 +130,12 @@ proj_setup <- function(path, ...){
       } else{
         tryCatch({
         writeLines(gitignore, con = file.path(path, '.gitignore'))
-        repo<- git2r::init(path)
+        repo <- git2r::init(path)
         if(remote_origin != '') git2r::remote_add(repo, 'origin', remote_origin)
         if(initcommit) {
           git2r::add(repo, 'ReadMe.md')
           git2r::commit(repo, message = 'Initial Commit')
-          git2r::push(repo, 'origin', 'refs/heads/master')
+          system(paste('cd', path, '&& git push -u origin master'))
         }
         }, error = function(e){
           paste0('There was an error setting up the git repo',
