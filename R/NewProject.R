@@ -135,7 +135,9 @@ proj_setup <- function(path, ...){
         if(initcommit) {
           git2r::add(repo, 'ReadMe.md')
           git2r::commit(repo, message = 'Initial Commit')
+          if(remote_origin != '') {
           system(paste('cd', path, '&& git push -u origin master'))
+          }
         }
         }, error = function(e){
           paste0('There was an error setting up the git repo',
