@@ -71,12 +71,15 @@ returnRow.numeric <- function(x, y, p){
   home_env <- getHome()
   name <- eval(getName())
   sigfig <- eval(quote(sigfig), parent.frame(home_env))
+  nsmall <- eval(quote(nsmall), parent.frame(home_env))
   y <- as.data.frame(y)
   mean <- aggregate(x, by = y, mean, na.rm = T, simplify = F)
   sd <- aggregate(x, by = y, sd, na.rm = T)
   mean <- format(mean, trim = T, drop0trailing = F, digits = sigfig,
+                 nsmall = nsmall,
                  big.mark = ',')
   sd <- format(sd, trim = T, drop0trailing = F, digits = sigfig,
+               nsmall = nsmall,
                big.mark = ',')
   mean_sd <- paste0(mean$x, "(", sd$x, ")")
   row <- c(name, mean_sd)

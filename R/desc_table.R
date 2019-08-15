@@ -1,9 +1,10 @@
-#' Create a table one
+#' Create a descriptive table (table one)
 #'
 #'
 #' This is a function created to provide characteristics of a study group with
 #' an option to stratify by some variable (usually an exposure) The output of
-#' this function is designed to be used with pander in rmarkdown, but all row
+#' this function is designed to be used with pander or kable in rmarkdown,
+#' but all row
 #' name formatting can be removed with the option: emphasis = 'n'.
 #'
 #' @param data the data frame or design object of the data you which to
@@ -48,27 +49,46 @@
 #' (The survey package must be installed in this case.)
 #'
 #' To use the lineBreaks use \code{panderOptions('keep.line.breaks', TRUE)}
-#' @keywords table1 tableone characteristic
+#' @keywords table1 tableone characteristic descriptive
 #' @export
 #'
 
 
-
-
-Table1 <- function(data, ...){
-  UseMethod('Table1')
+desc_table <- function(data, ....){
+  UseMethod('desc_table')
 }
 
 #' @describeIn Table1 unweighted table 1
 #' @export
 
-Table1.data.frame <- function(data, rowvars, colvar, sigfig = 4,
+desc_table.tbl_df <- function(data){
+  ### check for necessary tidyverse packages
+  ### otherwise run as data frame
+  for (pkg in c('dplyr', 'rlang', 'purrr')) {
+    if(!requireNamespace(pkg, quietly = T)) {
+    data <- as.data.frame(data)
+    return(desc_table.data.frame(data))
+    }
+  }; rm('pkg')
+
+  if(!is.null(colvar)){
+    if(is.character(colvar)) colvar <- dplyr::sym(colvar)
+  data <- dplyr::group_by(data, !!colvar)
+  }
+  count_fxn <- function(count_var){
+    dplyr::count(data, count = !!count_var)
+  }
+  purrr::map_dfr(counts, count_fxn)
+  return('success')
+
+}
+Table1.data.frame <- function(data, rowvars = NULL, colvar = NULL,
                               rowvar_names = NULL, incl_missing = TRUE,
                               incl_pvalues = FALSE,
                               emphasis = c('b', 's', 'n'),
-                              MedIQR = NULL, asTable = TRUE, lineBreaks = T,
-                              tight = TRUE, verbose = FALSE, nsmall = 4,
-                              ...){
+                              MedIQR = NULL, Kable = FALSE, lineBreaks = T,
+                              tight = TRUE, verbose = FALSE,
+                              ...){return('fail')}
   # set the home calling environment
   thisisthehomecallingenvironment <- T
 
