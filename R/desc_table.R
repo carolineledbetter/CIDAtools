@@ -61,27 +61,69 @@ desc_table <- function(data, ....){
 #' @describeIn Table1 unweighted table 1
 #' @export
 
-desc_table.tbl_df <- function(data){
+desc_table.tbl_df <- function(data,
+                              rowvars,
+                              colvar = NULL,
+                              freq = NULL,
+                              mean_sd = NULL,
+                              median_iqr = NULL,
+                              rowvar_names = NULL,
+                              incl_missing = TRUE,
+                              incl_pvalues = FALSE,
+                              sort = TRUE,
+                              tight = TRUE,
+                              verbose = FALSE,
+                              allow_large_categories = FALSE
+                              ) {
   ### check for necessary tidyverse packages
   ### otherwise run as data frame
   for (pkg in c('dplyr', 'rlang', 'purrr')) {
-    if(!requireNamespace(pkg, quietly = T)) {
+    if (!requireNamespace(pkg, quietly = T)) {
     data <- as.data.frame(data)
     return(desc_table.data.frame(data))
     }
   }; rm('pkg')
+  # group_by colvar
+  if (!is.null(rlang::enexpr(colvar))) {
+    if (is.character(rlang::enexpr(colvar))) colvar <- dplyr::sym(colvar)
+    colvar <- rlang::enquo(colvar)
+    data <- dplyr::group_by(data, !!colvar)
+  }
 
-  if(!is.null(colvar)){
-    if(is.character(colvar)) colvar <- dplyr::sym(colvar)
-  data <- dplyr::group_by(data, !!colvar)
+  if (is.null(rlang::enexpr(freq))) {
+    freq <-
   }
-  count_fxn <- function(count_var){
-    dplyr::count(data, count = !!count_var)
-  }
-  purrr::map_dfr(counts, count_fxn)
+
+  # get counts
+  count_rows <- purrr::map_dfr(.data = data,
+                               .x = freq,
+                               .f = count_fxn,
+                               .id = 'variable')
+  # get means
+  mean_rows <- purrr::map_dfr(.data = data,
+                 .x = mean_sd_vars,
+                 .f = mean_sd_fxn,
+                 .id = 'variable')
+
+  #get medians
+  median_rows <- purrr::map_dfr(.data = data,
+                 .x = median_vars,
+                 .f = median_iqr_fxn,
+                 .id = 'variable')
+  count_rows <- mutate()
+
+  tbl <- bind_rows(freq = count_rows,
+                   mean_sd = mean_rows,
+                   median_iqr = median_rows, .id = 'type')
   return('success')
 
 }
+
+
+
+
+
+
 Table1.data.frame <- function(data, rowvars = NULL, colvar = NULL,
                               rowvar_names = NULL, incl_missing = TRUE,
                               incl_pvalues = FALSE,
@@ -199,4 +241,7 @@ Table1.data.frame <- function(data, rowvars = NULL, colvar = NULL,
   colnames(tbl) <- NULL
   return(tbl)
 }
+
+
+
 
