@@ -70,6 +70,7 @@ desc_table.tbl_df <- function(data,
                               rowvar_names = NULL,
                               incl_missing = TRUE,
                               incl_pvalues = FALSE,
+                              unlist = TRUE,
                               sort = TRUE,
                               tight = TRUE,
                               verbose = FALSE,
@@ -83,39 +84,106 @@ desc_table.tbl_df <- function(data,
     return(desc_table.data.frame(data))
     }
   }; rm('pkg')
+
+
+  # column classes
+  rowvars <- rlang::enquo(rowvars)
+  col_class <- purrr::map_chr(dplyr::select(data,
+                                            !!rowvars), class)
+
+
+  # frequency variables
+  if (is.null(rlang::enexpr(freq))) {
+    freq <- rlang::syms(names(col_class)[col_class %in%
+                                             c("factor",
+                                               "character",
+                                               "logical")])
+  } else {
+    freq <- rlang::enquo(freq)
+    freq <- rlang::syms(names(dplyr::select(data, !!freq)))
+  }
+  names(freq) <- lapply(freq, rlang::as_string)
+  # mean variables
+  if (is.null(rlang::enexpr(mean_sd))) {
+    mean_sd <- rlang::syms(names(col_class)[col_class %in%
+                                           c("integer",
+                                             "double",
+                                             "numeric")])
+  } else {
+    mean_sd <- rlang::enquo(mean_sd)
+    mean_sd <- rlang::syms(names(dplyr::select(data, !!mean_sd)))
+  }
+  names(mean_sd) <- lapply(mean_sd, rlang::as_string)
+
+  # median IQR variables
+  if (is.null(rlang::enexpr(median_iqr))) {
+    median_iqr <- NULL
+  } else {
+    median_iqr <- rlang::enquo(median_iqr)
+    median_iqr <- rlang::syms(names(dplyr::select(data, !!median_iqr)))
+    names(median_iqr) <- lapply(median_iqr, rlang::as_string)
+  }
+
   # group_by colvar
   if (!is.null(rlang::enexpr(colvar))) {
-    if (is.character(rlang::enexpr(colvar))) colvar <- dplyr::sym(colvar)
+    if (is.character(rlang::enexpr(colvar))) colvar <- rlang::sym(colvar)
     colvar <- rlang::enquo(colvar)
     data <- dplyr::group_by(data, !!colvar)
   }
 
-  if (is.null(rlang::enexpr(freq))) {
-    freq <-
+  if(!allow_large_categories){
+    n_categories <- purrr::map(dplyr::select(data, !!rowvars,),
+                               dplyr::n_distinct)
+    if(any(purrr::map(dplyr::select(data, !!rowvars),
+                      dplyr::n_distinct) > 10)) {
+      has_have = ifelse(sum(n_categories > 10), 'have', 'has')
+      stop(paste(paste(names(n_categories)[n_categories > 10],
+                 collapse = ', '),
+                 has_have,
+                 'more than 10 distinct values. To allow run with',
+                 '`allow_large_categories` = TRUE.'))
+    }
   }
 
   # get counts
-  count_rows <- purrr::map_dfr(.data = data,
+  count_rows <- purrr::map_dfr(data = data,
                                .x = freq,
                                .f = count_fxn,
                                .id = 'variable')
+  count_rows <- dplyr::mutate(count_rows,
+                              output = purrr::pmap(list(n = n, pct = pct),
+                                                   list))
+  count_rows <- dplyr::select(count_rows,
+                              -n, -pct)
   # get means
-  mean_rows <- purrr::map_dfr(.data = data,
-                 .x = mean_sd_vars,
+  mean_rows <- purrr::map_dfr(data = data,
+                 .x = mean_sd,
                  .f = mean_sd_fxn,
                  .id = 'variable')
+  mean_rows <- dplyr::mutate(mean_rows,
+                             output = purrr::pmap(list(mean = mean, sd = sd),
+                                                  list))
+  mean_rows <- dplyr::select(mean_rows,
+                             -mean, -sd)
 
   #get medians
-  median_rows <- purrr::map_dfr(.data = data,
-                 .x = median_vars,
+  median_rows <- purrr::map_dfr(data = data,
+                 .x = median_iqr,
                  .f = median_iqr_fxn,
                  .id = 'variable')
-  count_rows <- mutate()
+  median_rows <- dplyr::mutate(median_rows,
+                               output = purrr::pmap(list(median = median,
+                                                         Q25 = Q25,
+                                                         Q75 = Q75),
+                                                    list))
+  median_rows <- dplyr::select(median_rows,
+                               -median, -Q25, -Q75)
+  # count_rows <- mutate()
 
-  tbl <- bind_rows(freq = count_rows,
+  tbl <- dplyr::bind_rows(freq = count_rows,
                    mean_sd = mean_rows,
                    median_iqr = median_rows, .id = 'type')
-  return('success')
+  return(tbl)
 
 }
 
