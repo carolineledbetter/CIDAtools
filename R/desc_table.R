@@ -7,34 +7,34 @@
 #' but all row
 #' name formatting can be removed with the option: emphasis = 'n'.
 #'
-#' @param data the data frame or design object of the data you which to
+#' @param data the tibble, data frame or design object of the data you which to
 #' characterize
-#' @param rowvars A vector of row positions or names.
-#' @param colvar The position or name of the variable to stratify by, set
+#' @param rowvars a vector of row positions or names. For tibbles see details.
+#' @param colvar the position or name of the variable to stratify by, set
 #' to \code{NULL} for no stratification.(p values cannot be returned if
-#' \code{NULL})
-#' @param sigfig The number of significant digits to use for mean, sd, median,
-#' and IQR.
-#' @param rowvar_names An optional vector of row names to be used for
-#' variables. Must be the same length and in the same order as rowvars.
-#' @param incl_missing Set to \code{TRUE} to include missing values (default)
-#' @param incl_pvalues Set to \code{TRUE} to include p values (p values are only
+#' \code{NULL}). for tibbles see details.
+#' @param freq variables you want counts for. If \code{NULL} then set to all
+#' charcter or factor variables in \code{rowvars}
+#' @param mean_sd variables you want counts for. If \code{NULL} then set to all
+#' charcter or factor variables in \code{rowvars}
+#' @param median_iqr
+#' @param rowvar_names an optional vector of row names to be used for
+#' variables. Maybe a named vector/list or an unnamed ordered vector.
+#' If named not all rowvars must be present (see details).
+#' @param incl_missing set to \code{TRUE} to include missing values (default)
+#' @param incl_pvalues set to \code{TRUE} to include p values (p values are only
 #' calculated on non missing observations) (default = \code{FALSE})
-#' @param emphasis Set to \code{'s'} for to indent categories for categorical values,
-#' \code{'b'} to bold just variable names, and \code{'n'} for no emphasis.
-#' @param MedIQR optional vector of continuous variables to return median and
-#' IQR instead of mean and SD.
-#' @param asTable should a table (\code{TRUE}) or a matrix be returned
-#' @param lineBreaks should the N be printed on a seperate line from the
-#' categories. default is \code{TRUE} (see details)
+#' @param unlist
+#' @param sort
 #' @param tight if \code{TRUE} (default) no spaces between numbers and
 #' parenthesis
 #' @param verbose should both levels of binary variables be printed.
-#' @param ... Arguments passed through methods to table 1.
-#' @return  a table/matrix with N and percentages for categorical variables, mean
-#' and sd for continuous ones, and median and 25th and 75th percentile for integers.
-#' If variables are passed via the MedIQR argument,
-#' median and 25th and 75th percentile is calculated instead for those variable.
+#' @param allow_large_categories = FALSE,
+#' @param binary_first should binary categoricals be placed at the top?
+#' Ignored if `sort = FALSE`.
+#' @param add_all = FALSE
+
+#' @return
 #' @details  Only
 #' the 1st factor of binary categorical variables is displayed. All
 #' determinations of categorical,
@@ -73,9 +73,12 @@ desc_table.tbl_df <- function(data,
                               unlist = TRUE,
                               sort = TRUE,
                               tight = TRUE,
-                              verbose = FALSE,
-                              allow_large_categories = FALSE
+                              verbose = TRUE,
+                              allow_large_categories = FALSE,
+                              binary_first = FALSE,
+                              add_all = FALSE
                               ) {
+  stop()
   ### check for necessary tidyverse packages
   ### otherwise run as data frame
   for (pkg in c('dplyr', 'rlang', 'purrr')) {
@@ -91,6 +94,12 @@ desc_table.tbl_df <- function(data,
   col_class <- purrr::map_chr(dplyr::select(data,
                                             !!rowvars), class)
 
+  na_to_missing <- function(x){
+    if(is.factor(x)) levels(x) <- c(levels(x), 'Missing')
+    x <- replace(x, is.na(x), 'Missing')
+    if(is.factor(x)) x <- droplevels(x)
+    return(x)
+  }
 
   # frequency variables
   if (is.null(rlang::enexpr(freq))) {
@@ -103,6 +112,11 @@ desc_table.tbl_df <- function(data,
     freq <- rlang::syms(names(dplyr::select(data, !!freq)))
   }
   names(freq) <- lapply(freq, rlang::as_string)
+
+  if (incl_missing) {
+    data <- dplyr::mutate_at(data,
+                             names(freq), na_to_missing)
+  }
   # mean variables
   if (is.null(rlang::enexpr(mean_sd))) {
     mean_sd <- rlang::syms(names(col_class)[col_class %in%
@@ -131,6 +145,9 @@ desc_table.tbl_df <- function(data,
     data <- dplyr::group_by(data, !!colvar)
   }
 
+  suppressMessages(
+    # select in this case will add missing grouping variables,
+    # this is desired behaviour
   if(!allow_large_categories){
     n_categories <- purrr::map(dplyr::select(data, !!rowvars,),
                                dplyr::n_distinct)
@@ -144,12 +161,18 @@ desc_table.tbl_df <- function(data,
                  '`allow_large_categories` = TRUE.'))
     }
   }
+  )
 
   # get counts
+  suppressWarnings(
+    # don't want warning for NAs
+    # because variable has been changed to value,
+    # it's not useful anyway
   count_rows <- purrr::map_dfr(data = data,
                                .x = freq,
                                .f = count_fxn,
                                .id = 'variable')
+  )
   count_rows <- dplyr::mutate(count_rows,
                               output = purrr::pmap(list(n = n, pct = pct),
                                                    list))
@@ -189,126 +212,6 @@ desc_table.tbl_df <- function(data,
 
 
 
-
-
-
-Table1.data.frame <- function(data, rowvars = NULL, colvar = NULL,
-                              rowvar_names = NULL, incl_missing = TRUE,
-                              incl_pvalues = FALSE,
-                              emphasis = c('b', 's', 'n'),
-                              MedIQR = NULL, Kable = FALSE, lineBreaks = T,
-                              tight = TRUE, verbose = FALSE,
-                              ...){return('fail')}
-  # set the home calling environment
-  thisisthehomecallingenvironment <- T
-
-  # set emphasis
-  emphasis <- match.arg(emphasis)
-
-  # get dataframe for row variables
-  nl <- as.list(seq_along(data))
-  names(nl) <- names(data)
-  rows <- data[, eval(substitute(rowvars), nl, parent.frame()), drop = F]
-
-  # do not include p_values if data is not stratified
-  # setup dummy variable for unstratified data
-  if (is.null(eval(substitute(colvar), nl, parent.frame()))) {
-    incl_pvalues <- F
-    data$dummy <- factor(rep('', nrow(data)))
-    colvar <- 'dummy'
-    nl <- as.list(seq_along(data))
-    names(nl) <- names(data)
-    dummy <- T
-  }
-
-  # column stratificiation variable
-  y <- data[, eval(substitute(colvar), nl, parent.frame())]
-
-
-  # set rows with MedIQR requests
-  median_rows <- which(names(rows) %in% MedIQR)
-  for(i in median_rows){class(rows[, i]) <- c('MedIQR', 'numeric')}; remove(i)
-
-  # get number of levels and sort so binary is on top only if no missing
-  n_levs <- sapply(lapply(rows, function(x){
-      if(is.character(x) | is.logical(x)){
-        y <- levels(factor(x))} else y <-levels(x)
-      }), length)
-  if(incl_missing == T) {
-    add_miss <- sapply(rows[!is.na(y), ], function(x) any(is.na(x)))
-    n_levs <- n_levs + add_miss
-    }
-  if(!verbose) n_levs[n_levs != 2] <- 3
-
-  # sort rows by class, want MedIQR last...
-  cls <- sapply(lapply(rows, class), `[[`, 1)
-  cls[cls %in% c('character', 'logical')] <- 'factor'
-  cls[cls %in% c('integer')] <- 'zzz'
-  cls[cls == 'MedIQR'] <- 'zzz'
-
-  # ord won't work if there's only one row var
-  ord <- 1
-  if(length(rows) != 1) ord <- order(cls, n_levs)
-
-  # set names if present
-  if(!is.null(rowvar_names)) names(rows) <- rowvar_names
-
-  # order rows
-  rows <- rows[, ord, drop = F]
-
-  # add bold if requested
-  if(emphasis == 'b') names(rows) <- paste0('**', names(rows), '**')
-
-
-  ##################################################################
-  ### headers
-  # number of columns
-  Cols <- length(levels(y))
-  p_col <- NULL
-
-  # add p_value if required
-  if(incl_pvalues) p_col <- ''
-
-  # set section headers (NULL if not needed)
-  N_pct <- c('', rep('N(%)', Cols), p_col)
-  if(sum(cls == 'factor') == 0) N_pct <- NULL
-  Mean_sd <- c('', rep('Mean(SD)', Cols), p_col)
-  if(sum(cls == 'numeric') == 0) Mean_sd <- NULL
-  Median <- c('', rep('Median(IQR)', Cols), p_col)
-  if(sum(cls == 'zzz') == 0) Median <- NULL
-
-  # get table
-  tbl <- lapply(rows, returnRow, y = y, p = incl_pvalues)
-  if(!tight) tbl <- lapply(tbl, gsub, pattern = '\\(', replacement = ' \\(')
-
-  # set class vector to same order as row
-  cls <- cls[ord]
-  # bind rows by type
-  cats <- do.call(rbind, tbl[cls == 'factor'])
-  means <- do.call(rbind, tbl[cls == 'numeric'])
-  medians <- do.call(rbind, tbl[cls == 'zzz'])
-
-  # put it all together
-  tbl <- rbind(N_pct, cats, Mean_sd, means, Median, medians)
-
-  # add p value label
-  if(incl_pvalues) p_col <- 'P value'
-
-  # Make column headers
-  Nequals <- ' \\\n N = '
-  if(!lineBreaks) Nequals <- ' N = '
-  if (exists('dummy', inherits = F)) Nequals <- 'N = '
-
-  Stratified_N <- table(y)
-  Stratified_N <- format(Stratified_N, big.mark = ',', trim = T)
-  Stratified_N <- paste0(levels(y), Nequals, Stratified_N)
-  Header <- c('', Stratified_N, p_col)
-  tbl <- rbind(Header, tbl)
-  if(asTable) tbl <- as.table(tbl)
-  rownames(tbl) <- NULL
-  colnames(tbl) <- NULL
-  return(tbl)
-}
 
 
 
