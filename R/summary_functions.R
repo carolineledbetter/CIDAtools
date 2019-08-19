@@ -18,27 +18,31 @@
 #' variable is needed use `purrr::map`.
 #'
 # get frequencies for categorical variables
-count_fxn <- function(.data, count_var){
+count_fxn <- function(data, count_var){
   count_var <- rlang::enquo(count_var)
-  tmp <- dplyr::count(.data,
+  tmp <- dplyr::count(data,
                       value = !!count_var,
                       .drop = F)
-  dplyr::mutate(tmp, value = as.character(value))
+  dplyr::mutate(tmp,
+                value = as.character(value),
+                pct = n/sum(n)*100)
 }
 
 # get mean and sd
-mean_sd_fxn <- function(.data, mean_sd_var){
-  mean_sd_var <- enquo(mean_sd_var)
-  dplyr::summarise(.data,
+mean_sd_fxn <- function(data, mean_sd_var){
+  mean_sd_var <- rlang::enquo(mean_sd_var)
+  dplyr::summarise(data,
                    mean = mean(!!mean_sd_var),
                    sd = sd(!!mean_sd_var))
 }
 
 # get median and iqr
-median_iqr_fxn <- function(.data, median_var){
-  median_var <- enquo(median_var)
-  dplyr::summarise(.data,
+median_iqr_fxn <- function(data, median_var){
+  median_var <- rlang::enquo(median_var)
+  dplyr::summarise(data,
                    median = median(!!median_var),
                    Q25 = quantile(!!median_var, probs = 0.25),
                    Q75 = quantile(!!median_var, probs = 0.75))
 }
+
+
