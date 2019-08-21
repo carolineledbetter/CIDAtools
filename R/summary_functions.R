@@ -6,7 +6,7 @@
 #' with `purrr::map` and `purrr::map_dfr` to create summaries of many
 #' variables in long table form.
 #'
-#' @param .data A tbl.
+#' @param data A tbl.
 #' @param count_var A variable for which you want counts. If more than one
 #' variable is needed use `purrr::map`.
 #' @param mean_sd_var A variable for which you want a mean and standard
@@ -17,6 +17,14 @@
 #' percentile. If more than one
 #' variable is needed use `purrr::map`.
 #'
+#' @importFrom stats median sd quantile
+#'
+#' @name summ_fxns
+NULL
+#> NULL
+
+#' @rdname summ_fxns
+#' @export
 # get frequencies for categorical variables
 count_fxn <- function(data, count_var){
   count_var <- rlang::enquo(count_var)
@@ -28,6 +36,8 @@ count_fxn <- function(data, count_var){
                 pct = n/sum(n)*100)
 }
 
+#' @rdname summ_fxns
+#' @export
 # get mean and sd
 mean_sd_fxn <- function(data, mean_sd_var){
   mean_sd_var <- rlang::enquo(mean_sd_var)
@@ -36,6 +46,8 @@ mean_sd_fxn <- function(data, mean_sd_var){
                    sd = sd(!!mean_sd_var))
 }
 
+#' @rdname summ_fxns
+#' @export
 # get median and iqr
 median_iqr_fxn <- function(data, median_var){
   median_var <- rlang::enquo(median_var)

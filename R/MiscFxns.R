@@ -177,7 +177,6 @@ convertIntervalNotation <- function(x){
 #'
 #'
 round_pretty <- function(x, digits = 0, type = c('s', 'd')){
-  match.arg()
-  formatC(x, digits = digits, type = )
+#WIP
 }
 

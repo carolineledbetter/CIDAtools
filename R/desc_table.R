@@ -15,17 +15,20 @@
 #' \code{NULL}). for tibbles see details.
 #' @param freq variables you want counts for. If \code{NULL} then set to all
 #' charcter or factor variables in \code{rowvars}
-#' @param mean_sd variables you want counts for. If \code{NULL} then set to all
-#' charcter or factor variables in \code{rowvars}
-#' @param median_iqr
+#' @param mean_sd variables you want mean and standard deviations for.
+#' If \code{NULL} then set to all
+#' numeric (integer or double) variables in \code{rowvars}
+#' @param median_iqr variables you want median, 25^th^ and 75^th^ percentiles
+#' for. If \code{NULL} no variables will return a median and interquartile
+#' range.
 #' @param rowvar_names an optional vector of row names to be used for
 #' variables. Maybe a named vector/list or an unnamed ordered vector.
 #' If named not all rowvars must be present (see details).
 #' @param incl_missing set to \code{TRUE} to include missing values (default)
 #' @param incl_pvalues set to \code{TRUE} to include p values (p values are only
 #' calculated on non missing observations) (default = \code{FALSE})
-#' @param unlist
-#' @param sort
+#' @param unlist should outputs be unlisted (default)
+#' @param sort should variables be sorted by output
 #' @param tight if \code{TRUE} (default) no spaces between numbers and
 #' parenthesis
 #' @param verbose should both levels of binary variables be printed.
@@ -34,14 +37,9 @@
 #' Ignored if `sort = FALSE`.
 #' @param add_all = FALSE
 
-#' @return
-#' @details  Only
-#' the 1st factor of binary categorical variables is displayed. All
-#' determinations of categorical,
-#' binary, or continuous are performed automatically.
-#' Character variables are converted to factors. Variables are displayed in
-#' the following order: binary, non-binary categorical, continuous, and integers
-#' + continuous variables with median and IQR.
+#' @return a tibble, dataframe or table depending on input.
+#' @details
+#'
 #' If no stratification variable is provided, summary statistics on the
 #' entire sample are provided. No p-values can be provided in this case.
 #' If a design object is passed in lieu of a data frame, weighted numbers
@@ -54,11 +52,11 @@
 #'
 
 
-desc_table <- function(data, ....){
+desc_table <- function(data, ...){
   UseMethod('desc_table')
 }
 
-#' @describeIn Table1 unweighted table 1
+#' @describeIn desc_table tibble descriptive table
 #' @export
 
 desc_table.tbl_df <- function(data,
