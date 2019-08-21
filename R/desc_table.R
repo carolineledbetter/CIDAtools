@@ -76,7 +76,6 @@ desc_table.tbl_df <- function(data,
                               binary_first = FALSE,
                               add_all = FALSE
                               ) {
-  stop()
   ### check for necessary tidyverse packages
   ### otherwise run as data frame
   for (pkg in c('dplyr', 'rlang', 'purrr')) {
@@ -160,7 +159,7 @@ desc_table.tbl_df <- function(data,
     }
   }
   )
-
+  stop()
   # get counts
   suppressWarnings(
     # don't want warning for NAs
@@ -171,6 +170,9 @@ desc_table.tbl_df <- function(data,
                                .f = count_fxn,
                                .id = 'variable')
   )
+ # this will not run if count_rows is empty
+  # needs to be fixed.
+  stop()
   count_rows <- dplyr::mutate(count_rows,
                               output = purrr::pmap(list(n = n, pct = pct),
                                                    list))
