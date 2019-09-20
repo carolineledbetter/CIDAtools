@@ -27,34 +27,56 @@ NULL
 #' @export
 # get frequencies for categorical variables
 count_fxn <- function(data, count_var){
+  if (!requireNamespace('dplyr', quietly = T)) {
+    stop('dplyr is required')
+  }
+  if (!requireNamespace('rlang', quietly = T)) {
+    stop('rlang is required')
+  }
   count_var <- rlang::enquo(count_var)
   tmp <- dplyr::count(data,
                       value = !!count_var,
                       .drop = F)
+  tmp <- dplyr::arrange(tmp,
+                        (value == 'Missing'),
+                        .by_group = TRUE)
   dplyr::mutate(tmp,
                 value = as.character(value),
                 pct = n/sum(n)*100)
+
 }
 
 #' @rdname summ_fxns
 #' @export
 # get mean and sd
 mean_sd_fxn <- function(data, mean_sd_var){
+  if (!requireNamespace('dplyr', quietly = T)) {
+    stop('dplyr is required')
+  }
+  if (!requireNamespace('rlang', quietly = T)) {
+    stop('rlang is required')
+  }
   mean_sd_var <- rlang::enquo(mean_sd_var)
   dplyr::summarise(data,
-                   mean = mean(!!mean_sd_var),
-                   sd = sd(!!mean_sd_var))
+                   mean = mean(!!mean_sd_var, na.rm = T),
+                   sd = sd(!!mean_sd_var, na.rm = T))
 }
 
 #' @rdname summ_fxns
 #' @export
 # get median and iqr
 median_iqr_fxn <- function(data, median_var){
+  if (!requireNamespace('dplyr', quietly = T)) {
+    stop('dplyr is required')
+  }
+  if (!requireNamespace('rlang', quietly = T)) {
+    stop('rlang is required')
+  }
   median_var <- rlang::enquo(median_var)
   dplyr::summarise(data,
-                   median = median(!!median_var),
-                   Q25 = quantile(!!median_var, probs = 0.25),
-                   Q75 = quantile(!!median_var, probs = 0.75))
+                   median = median(!!median_var, na.rm = T),
+                   Q25 = quantile(!!median_var, probs = 0.25, na.rm = T),
+                   Q75 = quantile(!!median_var, probs = 0.75, na.rm = T))
 }
 
 

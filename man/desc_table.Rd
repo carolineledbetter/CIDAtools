@@ -9,10 +9,10 @@ desc_table(data, ...)
 
 \method{desc_table}{tbl_df}(data, rowvars, colvar = NULL, freq = NULL,
   mean_sd = NULL, median_iqr = NULL, rowvar_names = NULL,
-  incl_missing = TRUE, incl_pvalues = FALSE, unlist = TRUE,
+  incl_missing = TRUE, incl_pvalues = FALSE, return_list = FALSE,
   sort = TRUE, tight = TRUE, verbose = TRUE,
   allow_large_categories = FALSE, binary_first = FALSE,
-  add_all = FALSE)
+  add_all = FALSE, collapse_logical = FALSE)
 }
 \arguments{
 \item{data}{the tibble, data frame or design object of the data you which to
@@ -44,7 +44,9 @@ If named not all rowvars must be present (see details).}
 \item{incl_pvalues}{set to \code{TRUE} to include p values (p values are only
 calculated on non missing observations) (default = \code{FALSE})}
 
-\item{unlist}{should outputs be unlisted (default)}
+\item{return_list}{should outputs be returned as a list?
+\code{FALSE} (the default) collapses summary measures to one measure (as a
+character)}
 
 \item{sort}{should variables be sorted by output}
 
@@ -59,6 +61,10 @@ parenthesis}
 Ignored if `sort = FALSE`.}
 
 \item{add_all}{= FALSE}
+
+\item{collapse_logical}{should logical vectors be collapsed so that just
+the number of true is reported and only the variable name is shown
+(default = \code{FALSE})}
 }
 \value{
 a tibble, dataframe or table depending on input.

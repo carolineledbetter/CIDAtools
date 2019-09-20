@@ -27,7 +27,9 @@
 #' @param incl_missing set to \code{TRUE} to include missing values (default)
 #' @param incl_pvalues set to \code{TRUE} to include p values (p values are only
 #' calculated on non missing observations) (default = \code{FALSE})
-#' @param unlist should outputs be unlisted (default)
+#' @param return_list should outputs be returned as a list?
+#' \code{FALSE} (the default) collapses summary measures to one measure (as a
+#' character)
 #' @param sort should variables be sorted by output
 #' @param tight if \code{TRUE} (default) no spaces between numbers and
 #' parenthesis
@@ -36,6 +38,9 @@
 #' @param binary_first should binary categoricals be placed at the top?
 #' Ignored if `sort = FALSE`.
 #' @param add_all = FALSE
+#' @param collapse_logical should logical vectors be collapsed so that just
+#' the number of true is reported and only the variable name is shown
+#' (default = \code{FALSE})
 
 #' @return a tibble, dataframe or table depending on input.
 #' @details
@@ -68,22 +73,27 @@ desc_table.tbl_df <- function(data,
                               rowvar_names = NULL,
                               incl_missing = TRUE,
                               incl_pvalues = FALSE,
-                              unlist = TRUE,
+                              return_list = FALSE,
                               sort = TRUE,
                               tight = TRUE,
                               verbose = TRUE,
                               allow_large_categories = FALSE,
                               binary_first = FALSE,
-                              add_all = FALSE
+                              add_all = FALSE,
+                              collapse_logical = FALSE
                               ) {
   ### check for necessary tidyverse packages
   ### otherwise run as data frame
+
   for (pkg in c('dplyr', 'rlang', 'purrr')) {
     if (!requireNamespace(pkg, quietly = T)) {
     data <- as.data.frame(data)
     return(desc_table.data.frame(data))
     }
   }; rm('pkg')
+
+  sp <- ifelse(tight, '', ' ')
+
 
 
   # column classes
@@ -97,6 +107,7 @@ desc_table.tbl_df <- function(data,
     if(is.factor(x)) x <- droplevels(x)
     return(x)
   }
+
 
   # frequency variables
   if (is.null(rlang::enexpr(freq))) {
@@ -146,20 +157,25 @@ desc_table.tbl_df <- function(data,
     # select in this case will add missing grouping variables,
     # this is desired behaviour
   if(!allow_large_categories){
-    n_categories <- purrr::map(dplyr::select(data, !!rowvars,),
+    n_categories <- purrr::map(dplyr::select(data, !!!freq,),
                                dplyr::n_distinct)
-    if(any(purrr::map(dplyr::select(data, !!rowvars),
-                      dplyr::n_distinct) > 10)) {
-      has_have = ifelse(sum(n_categories > 10), 'have', 'has')
-      stop(paste(paste(names(n_categories)[n_categories > 10],
-                 collapse = ', '),
+    if(any(n_categories > 10)) {
+      has_have = ' has '
+      and = ' and '
+      if (sum(n_categories > 10) > 1) {
+        has_have = ' have '
+        and = ' and '
+        }
+      vars <- names(n_categories)[n_categories > 10]
+      stop(paste0(paste(vars[-length(vars)], collapse = ', '),
+                 and, vars[length(vars)],
                  has_have,
-                 'more than 10 distinct values. To allow run with',
-                 '`allow_large_categories` = TRUE.'))
+                 'more than 10 distinct values. To allow run with ',
+                 '`allow_large_categories = TRUE`.'))
     }
   }
   )
-  stop()
+
   # get counts
   suppressWarnings(
     # don't want warning for NAs
@@ -170,38 +186,82 @@ desc_table.tbl_df <- function(data,
                                .f = count_fxn,
                                .id = 'variable')
   )
- # this will not run if count_rows is empty
-  # needs to be fixed.
-  stop()
-  count_rows <- dplyr::mutate(count_rows,
-                              output = purrr::pmap(list(n = n, pct = pct),
-                                                   list))
-  count_rows <- dplyr::select(count_rows,
-                              -n, -pct)
+
   # get means
   mean_rows <- purrr::map_dfr(data = data,
                  .x = mean_sd,
                  .f = mean_sd_fxn,
                  .id = 'variable')
-  mean_rows <- dplyr::mutate(mean_rows,
-                             output = purrr::pmap(list(mean = mean, sd = sd),
-                                                  list))
-  mean_rows <- dplyr::select(mean_rows,
-                             -mean, -sd)
 
   #get medians
   median_rows <- purrr::map_dfr(data = data,
                  .x = median_iqr,
                  .f = median_iqr_fxn,
                  .id = 'variable')
-  median_rows <- dplyr::mutate(median_rows,
-                               output = purrr::pmap(list(median = median,
-                                                         Q25 = Q25,
-                                                         Q75 = Q75),
+
+
+  if (ncol(count_rows) == 0){
+  count_rows <- dplyr::tibble(variable = NA_character_,
+                              value = NA_character_,
+                              n = NA_real_,
+                              pct = NA_real_,
+                              .rows = 0)
+  }
+  if (ncol(mean_rows) == 0){
+  mean_rows <- dplyr::tibble(variable = NA_character_,
+                             value = NA_character_,
+                             mean = NA_real_,
+                             sd = NA_real_,
+                             .rows = 0)
+  }
+  if (ncol(median_rows) == 0){
+  median_rows <- dplyr::tibble(variable = NA_character_,
+                               value = NA_character_,
+                               median = NA_real_,
+                               Q25 = NA_real_,
+                               Q75 = NA_real_,
+                               .rows = 0)
+  }
+  if(!return_list){
+    count_rows <- dplyr::mutate(count_rows,
+                                outcome = paste0(n, sp, "(",
+                                                 format(pct, digits = 0),
+                                                 ')'))
+    mean_rows <- dplyr::mutate(mean_rows,
+                               outcome = paste0(format(mean, digits = 2),
+                                                sp, "(",
+                                                format(sd, digits = 2), ')'))
+    median_rows <- dplyr::mutate(median_rows,
+                                 outcome = paste0(median, sp, "(",
+                                                  Q25, '-', Q75, ')'))
+  } else {
+    count_rows <- dplyr::mutate(count_rows,
+                                output = purrr::pmap(list(n = n, pct = pct),
+                                                     list))
+    mean_rows <- dplyr::mutate(mean_rows,
+                               output = purrr::pmap(list(mean = mean, sd = sd),
                                                     list))
+    median_rows <- dplyr::mutate(median_rows,
+                                 output = purrr::pmap(list(median = median,
+                                                           Q25 = Q25,
+                                                           Q75 = Q75),
+                                                      list))
+  }
+
+  # collapse logical
+  if(collapse_logical){
+    count_rows <- dplyr::mutate(count_rows,
+                                value = dplyr::recode(value,
+                                               `TRUE` = variable))
+    count_rows <- dplyr::filter(count_rows,
+                                value != 'FALSE')
+  }
+  count_rows <- dplyr::select(count_rows,
+                              -n, -pct)
+  mean_rows <- dplyr::select(mean_rows,
+                             -mean, -sd)
   median_rows <- dplyr::select(median_rows,
                                -median, -Q25, -Q75)
-  # count_rows <- mutate()
 
   tbl <- dplyr::bind_rows(freq = count_rows,
                    mean_sd = mean_rows,
