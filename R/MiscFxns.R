@@ -180,3 +180,47 @@ round_pretty <- function(x, digits = 0, type = c('s', 'd')){
 #WIP
 }
 
+#' Sum ignoring NAs
+#'
+#' Will sum values returning NA only if all values are NA, otherise will ignore
+#'
+#' @param ... numbers or vectors to be summed. Must be type logical or numeric.
+#'
+#' @return a numeric vector of the same length as the arguments
+#' @details this function will provide vectorized sums with NAs ignored unless
+#' only NAs are present
+#'
+#' @keywords sum
+#' @export
+#' @examples
+#' # ignores NA
+#' sum_ignore_NA(2, 3, NA)
+#' # returns NA if all values are NA
+#' sum_ignore_NA(NA, NA, NA)
+#'
+#' # returns vectorized sums
+#'
+#' x <- c(1, 2, NA)
+#' y <- c(1:3)
+#' sum_xy <- sum_ignore_NA(x, y)
+#' data.frame(x, y, sum_xy)
+#'
+#' x <- c(1, 2, NA)
+#' y <- c(1, 2, NA)
+#' sum_xy <- sum_ignore_NA(x, y)
+#' data.frame(x, y, sum_xy)
+
+
+sum_ignore_NA <- function(...){
+  arguments <- list(...)
+  arguments <- lapply(arguments, unlist)
+  x <- sapply(arguments, length)
+  if(min(x) != max(x)) stop('Vectors must be same length')
+  arguments <- lapply(1:min(x), function(i) sapply(arguments, `[[`, i))
+  sapply(arguments, function(numbers){
+    if(all(is.na(numbers))) return(NA)
+    if(!is.numeric(numbers) & !is.logical(numbers))
+      stop('Arguments must be numeric or logical')
+    sum(numbers, na.rm = T)
+  })
+}
