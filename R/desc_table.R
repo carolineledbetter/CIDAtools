@@ -153,6 +153,9 @@ desc_table.tbl_df <- function(data,
     data <- dplyr::group_by(data, !!colvar)
   }
 
+  n_plural <- dplyr::count(data)
+  n_plural <- dplyr::rename(n_plural, total_n = n)
+
   suppressMessages(
     # select in this case will add missing grouping variables,
     # this is desired behaviour
@@ -228,12 +231,23 @@ desc_table.tbl_df <- function(data,
                                                  format(pct, digits = 0),
                                                  ')'))
     mean_rows <- dplyr::mutate(mean_rows,
-                               outcome = paste0(format(mean, digits = 2),
+                               outcome = paste0(format(mean, digits = 2,
+                                                       nsmall = 1,
+                                                       trim = T),
                                                 sp, "(",
-                                                format(sd, digits = 2), ')'))
+                                                format(sd, digits = 2,
+                                                       nsmall = 1,
+                                                       trim = T), ')'))
     median_rows <- dplyr::mutate(median_rows,
-                                 outcome = paste0(median, sp, "(",
-                                                  Q25, '-', Q75, ')'))
+                                 outcome = paste0(format(median, digits = 2,
+                                                         nsmall = 1,
+                                                         trim = T), sp, "(",
+                                                  format(Q25, digits = 2,
+                                                         nsmall = 1,
+                                                         trim = T), '-',
+                                                  format(Q75, digits = 2,
+                                                         nsmall = 1,
+                                                         trim = T), ')'))
   } else {
     count_rows <- dplyr::mutate(count_rows,
                                 output = purrr::pmap(list(n = n, pct = pct),
@@ -266,6 +280,13 @@ desc_table.tbl_df <- function(data,
   tbl <- dplyr::bind_rows(freq = count_rows,
                    mean_sd = mean_rows,
                    median_iqr = median_rows, .id = 'type')
+
+  if(ncol(n_plural) == 2) {
+    tbl <- dplyr::left_join(tbl, n_plural)
+  } else {
+    tbl <- dplyr::mutate(tbl, total_n = n_plural$n)
+  }
+
   return(tbl)
 
 }
