@@ -227,8 +227,10 @@ desc_table.tbl_df <- function(data,
   }
   if(!return_list){
     count_rows <- dplyr::mutate(count_rows,
-                                outcome = paste0(n, sp, "(",
-                                                 format(pct, digits = 0),
+                                outcome = paste0(format(n, big.mark = ',',
+                                                        trim = T), sp, "(",
+                                                 format(pct, digits = 0,
+                                                        trim = T),
                                                  ')'))
     mean_rows <- dplyr::mutate(mean_rows,
                                outcome = paste0(format(mean, digits = 2,
@@ -281,12 +283,14 @@ desc_table.tbl_df <- function(data,
                    mean_sd = mean_rows,
                    median_iqr = median_rows, .id = 'type')
 
+
+  suppressMessages(
   if(ncol(n_plural) == 2) {
     tbl <- dplyr::left_join(tbl, n_plural)
   } else {
-    tbl <- dplyr::mutate(tbl, total_n = n_plural$n)
+    tbl <- dplyr::mutate(tbl, total_n = n_plural$total_n)
   }
-
+  )
   return(tbl)
 
 }
