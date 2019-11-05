@@ -25,3 +25,12 @@ and the Table1 function.
 
 Please feel free to file an issue request if you encounter errors or would like 
 to request new features.  
+
+## News/Notes
+Currently tibbles do not work with `Table1()`. To use `Table1()` with a tibble please use `as.data.frame()`. A new function 
+(`desc_table()`)
+utilizing tidy principles and compatible with the tidyverse is under construction. A preliminary version (lacking some of the 
+ultimate functionality) is available/working. 
+If you would like to use it while it is in development it is under development in the desc_table branch. 
+The commit messages/code comments 
+contain details on where in the process I am at. 
