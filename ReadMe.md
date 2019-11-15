@@ -1,6 +1,6 @@
 # CIDAtools
 
-![CIDAtools](inst/figures/CIDAtoolshex.png)
+<img src="inst/figures/CIDAtoolshex.png" alt="CIDAtools" width="259" height="300"/>
 
 `devtools::install_github('ledbettc/CIDAtools')`
 
