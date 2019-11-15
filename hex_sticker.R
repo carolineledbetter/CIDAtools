@@ -1,7 +1,13 @@
 library(hexSticker)
-imgurl <- system.file("~/Downloads/Tools-spanner-hammer.svg", package="hexSticker")
-sticker(imgurl, package="CIDAtools", p_size=20, s_x=1, s_y=.75, s_width=.6,
+imgurl <- "~/Downloads/2000px-Tools-spanner-hammer.svg.png"
+sticker(imgurl, package="CIDAtools",
+        s_x = 1,
+        s_y = 1,
+        s_width = 0.75,
+        p_y = 1,
+        p_size = 9.25,
         h_fill = '#CFB87C',
         h_color = "#000000",
         p_color = "#000000",
-        filename="inst/figures/CIDAtoolshex.png")
+        filename="inst/figures/CIDAtoolshex.png",
+        dpi = 1500)
