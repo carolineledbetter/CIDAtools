@@ -85,7 +85,7 @@ desc_table.tbl_df <- function(data,
   ### check for necessary tidyverse packages
   ### otherwise run as data frame
 
-  for (pkg in c('dplyr', 'rlang', 'purrr')) {
+  for (pkg in c('dplyr', 'rlang', 'purrr', 'tidyr')) {
     if (!requireNamespace(pkg, quietly = T)) {
     data <- as.data.frame(data)
     return(desc_table.data.frame(data))
@@ -116,14 +116,12 @@ desc_table.tbl_df <- function(data,
                                                "character",
                                                "logical")])
   } else {
-    freq <- rlang::enquo(freq)
-    freq <- rlang::syms(names(dplyr::select(data, !!freq)))
+    freq <- rlang::enquos(freq)
   }
-  names(freq) <- lapply(freq, rlang::as_string)
 
   if (incl_missing) {
     data <- dplyr::mutate_at(data,
-                             names(freq), na_to_missing)
+                             vars(!!!freq), na_to_missing)
   }
   # mean variables
   if (is.null(rlang::enexpr(mean_sd))) {

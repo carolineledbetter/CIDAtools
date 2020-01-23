@@ -40,10 +40,13 @@ count_fxn <- function(data, count_var){
   tmp <- dplyr::arrange(tmp,
                         (value == 'Missing'),
                         .by_group = TRUE)
-  dplyr::mutate(tmp,
-                value = as.character(value),
-                pct = n/sum(n)*100)
-
+  tmp <- dplyr::mutate(tmp,
+                       value = as.character(value),
+                       pct = n/sum(n)*100)
+  tidyr::pivot_longer(tmp,
+                      cols = !!count_var,
+                      names_to = 'variable',
+                      values_to = value)
 }
 
 #' @rdname summ_fxns
