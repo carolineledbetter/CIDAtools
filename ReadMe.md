@@ -1,8 +1,13 @@
-# CIDAtools
+# CIDAtools  
+The primary purpose of this package is to house RProject Templates that automatically setup folder
+structures, ReadMe, and .git according to the preferred workflow at CIDA. 
 
 <img src="inst/figures/CIDAtoolshex.png" alt="CIDAtools" width="259" height="300"/>
 
 `devtools::install_github('ledbettc/CIDAtools')`
+
+This package allows the Project Name, PI, and Project Analyst to be stored in a ProjData.dcf file to be 
+easily retrieved and used in headers and reports. 
 
 Example of header snippet using Project Data:
 ```
