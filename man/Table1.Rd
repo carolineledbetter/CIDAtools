@@ -7,10 +7,23 @@
 \usage{
 Table1(data, ...)
 
-\method{Table1}{data.frame}(data, rowvars, colvar, sigfig = 4,
-  rowvar_names = NULL, incl_missing = TRUE, incl_pvalues = FALSE,
-  emphasis = c("b", "s", "n"), MedIQR = NULL, asTable = TRUE,
-  lineBreaks = T, tight = TRUE, verbose = FALSE, nsmall = 4, ...)
+\method{Table1}{data.frame}(
+  data,
+  rowvars,
+  colvar,
+  sigfig = 4,
+  rowvar_names = NULL,
+  incl_missing = TRUE,
+  incl_pvalues = FALSE,
+  emphasis = c("b", "s", "n"),
+  MedIQR = NULL,
+  asTable = TRUE,
+  lineBreaks = T,
+  tight = TRUE,
+  verbose = FALSE,
+  nsmall = 4,
+  ...
+)
 }
 \arguments{
 \item{data}{the data frame or design object of the data you which to

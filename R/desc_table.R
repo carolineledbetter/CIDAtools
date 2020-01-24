@@ -94,20 +94,12 @@ desc_table.tbl_df <- function(data,
 
   sp <- ifelse(tight, '', ' ')
 
-
+stop()
 
   # column classes
   rowvars <- rlang::enquo(rowvars)
   col_class <- purrr::map_chr(dplyr::select(data,
                                             !!rowvars), class)
-
-  na_to_missing <- function(x){
-    if(is.factor(x)) levels(x) <- c(levels(x), 'Missing')
-    x <- replace(x, is.na(x), 'Missing')
-    if(is.factor(x)) x <- droplevels(x)
-    return(x)
-  }
-
 
   # frequency variables
   if (is.null(rlang::enexpr(freq))) {
@@ -293,7 +285,14 @@ desc_table.tbl_df <- function(data,
 
 }
 
-
+# helpers
+# don't want forcats dependecy for one function
+na_to_missing <- function(x){
+  if(is.factor(x)) levels(x) <- c(levels(x), 'Missing')
+  x <- replace(x, is.na(x), 'Missing')
+  if(is.factor(x)) x <- droplevels(x)
+  return(x)
+}
 
 
 

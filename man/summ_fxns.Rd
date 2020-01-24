@@ -35,3 +35,17 @@ They are wrappers for summarise functions that are designed to used
 with `purrr::map` and `purrr::map_dfr` to create summaries of many
 variables in long table form.
 }
+\examples{
+count_fxn(mtcars, cyl)
+
+# the functions will preserve existing groupings
+by_cyl <- dplyr::group_by(mtcars, cyl)
+count_fxn(by_cyl, am)
+
+# the functions can be combined with purrr::map and rlang::quos
+# to create long tables of summaries
+purrr::map(rlang::quos(am), count_fxn, data = by_cyl)
+purrr::map(rlang::quos(vs, am), count_fxn, data = by_cyl)
+purrr::map_dfr(rlang::quos(vs, am), count_fxn, data = by_cyl)
+purrr::map_dfr(rlang::quos(disp, hp), mean_sd_fxn, data = by_cyl)
+}

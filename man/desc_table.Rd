@@ -7,12 +7,25 @@
 \usage{
 desc_table(data, ...)
 
-\method{desc_table}{tbl_df}(data, rowvars, colvar = NULL, freq = NULL,
-  mean_sd = NULL, median_iqr = NULL, rowvar_names = NULL,
-  incl_missing = TRUE, incl_pvalues = FALSE, return_list = FALSE,
-  sort = TRUE, tight = TRUE, verbose = TRUE,
-  allow_large_categories = FALSE, binary_first = FALSE,
-  add_all = FALSE, collapse_logical = FALSE)
+\method{desc_table}{tbl_df}(
+  data,
+  rowvars,
+  colvar = NULL,
+  freq = NULL,
+  mean_sd = NULL,
+  median_iqr = NULL,
+  rowvar_names = NULL,
+  incl_missing = TRUE,
+  incl_pvalues = FALSE,
+  return_list = FALSE,
+  sort = TRUE,
+  tight = TRUE,
+  verbose = TRUE,
+  allow_large_categories = FALSE,
+  binary_first = FALSE,
+  add_all = FALSE,
+  collapse_logical = FALSE
+)
 }
 \arguments{
 \item{data}{the tibble, data frame or design object of the data you which to
