@@ -25,7 +25,23 @@ NULL
 
 #' @rdname summ_fxns
 #' @export
+#' @examples
+#' count_fxn(mtcars, cyl)
+#'
+#' # the functions will preserve existing groupings
+#' by_cyl <- dplyr::group_by(mtcars, cyl)
+#' count_fxn(by_cyl, am)
+#'
+#' # the functions can be combined with purrr::map and rlang::quos
+#' # to create long tables of summaries
+#' purrr::map(rlang::quos(am), count_fxn, data = by_cyl)
+#' purrr::map(rlang::quos(vs, am), count_fxn, data = by_cyl)
+#' purrr::map_dfr(rlang::quos(vs, am), count_fxn, data = by_cyl)
+#' purrr::map_dfr(rlang::quos(disp, hp), mean_sd_fxn, data = by_cyl)
+
+
 # get frequencies for categorical variables
+
 count_fxn <- function(data, count_var){
   if (!requireNamespace('dplyr', quietly = T)) {
     stop('dplyr is required')
@@ -33,7 +49,11 @@ count_fxn <- function(data, count_var){
   if (!requireNamespace('rlang', quietly = T)) {
     stop('rlang is required')
   }
+
   count_var <- rlang::enquo(count_var)
+
+  name <- names(dplyr::select(dplyr::ungroup(data), !!count_var))
+
   tmp <- dplyr::count(data,
                       value = !!count_var,
                       .drop = F)
@@ -41,12 +61,10 @@ count_fxn <- function(data, count_var){
                         (value == 'Missing'),
                         .by_group = TRUE)
   tmp <- dplyr::mutate(tmp,
+                       variable = name,
                        value = as.character(value),
                        pct = n/sum(n)*100)
-  tidyr::pivot_longer(tmp,
-                      cols = !!count_var,
-                      names_to = 'variable',
-                      values_to = value)
+  dplyr::select(tmp, variable, value, n, pct)
 }
 
 #' @rdname summ_fxns
@@ -60,7 +78,11 @@ mean_sd_fxn <- function(data, mean_sd_var){
     stop('rlang is required')
   }
   mean_sd_var <- rlang::enquo(mean_sd_var)
+
+  name <- names(dplyr::select(dplyr::ungroup(data), !!mean_sd_var))
+
   dplyr::summarise(data,
+                   variable = name,
                    mean = mean(!!mean_sd_var, na.rm = T),
                    sd = sd(!!mean_sd_var, na.rm = T))
 }
@@ -76,7 +98,11 @@ median_iqr_fxn <- function(data, median_var){
     stop('rlang is required')
   }
   median_var <- rlang::enquo(median_var)
+
+  name <- names(dplyr::select(dplyr::ungroup(data), !!median_var))
+
   dplyr::summarise(data,
+                   variable = name,
                    median = median(!!median_var, na.rm = T),
                    Q25 = quantile(!!median_var, probs = 0.25, na.rm = T),
                    Q75 = quantile(!!median_var, probs = 0.75, na.rm = T))
