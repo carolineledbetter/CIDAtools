@@ -217,7 +217,7 @@ stop()
   }
   if(!return_list){
     count_rows <- dplyr::mutate(count_rows,
-                                outcome = paste0(format(n, big.mark = ',',
+                                ..outcome = paste0(format(n, big.mark = ',',
                                                         trim = T), sp, "(",
                                                  format(pct, digits = 0,
                                                         trim = T),
@@ -242,13 +242,13 @@ stop()
                                                          trim = T), ')'))
   } else {
     count_rows <- dplyr::mutate(count_rows,
-                                output = purrr::pmap(list(n = n, pct = pct),
+                                ..output = purrr::pmap(list(n = n, pct = pct),
                                                      list))
     mean_rows <- dplyr::mutate(mean_rows,
-                               output = purrr::pmap(list(mean = mean, sd = sd),
+                               ..output = purrr::pmap(list(mean = mean, sd = sd),
                                                     list))
     median_rows <- dplyr::mutate(median_rows,
-                                 output = purrr::pmap(list(median = median,
+                                 ..output = purrr::pmap(list(median = median,
                                                            Q25 = Q25,
                                                            Q75 = Q75),
                                                       list))

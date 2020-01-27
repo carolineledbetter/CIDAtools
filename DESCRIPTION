@@ -10,7 +10,8 @@ Suggests: dplyr,
           tibble, 
           survey, 
           xlsx, 
-          testthat
+          testthat, 
+          purrr
 License: CC0
 Encoding: UTF-8
 LazyData: true
