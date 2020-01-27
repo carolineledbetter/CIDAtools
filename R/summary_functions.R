@@ -50,7 +50,13 @@ count_fxn <- function(data, count_var){
     stop('rlang is required')
   }
 
+  # allow variable postions as well as names
+  if(is.numeric(rlang::enexpr(count_var))){
+    count_var <- rlang::sym(names(dplyr::select(dplyr::ungroup(data),
+                                         !!count_var)))
+  }
   count_var <- rlang::enquo(count_var)
+
 
   name <- names(dplyr::select(dplyr::ungroup(data), !!count_var))
 
@@ -64,7 +70,13 @@ count_fxn <- function(data, count_var){
                        variable = name,
                        value = as.character(value),
                        pct = n/sum(n)*100)
+
+  # want variable, value, n, pct to be in order,
+  # grouping variable will automatically be added to the
+  # front but don't want message
+  suppressMessages(
   dplyr::select(tmp, variable, value, n, pct)
+  )
 }
 
 #' @rdname summ_fxns
@@ -77,6 +89,13 @@ mean_sd_fxn <- function(data, mean_sd_var){
   if (!requireNamespace('rlang', quietly = T)) {
     stop('rlang is required')
   }
+
+  # allow variable postions as well as names
+  if(is.numeric(rlang::enexpr(mean_sd_var))){
+    mean_sd_var <- rlang::sym(names(dplyr::select(dplyr::ungroup(data),
+                                                !!mean_sd_var)))
+  }
+
   mean_sd_var <- rlang::enquo(mean_sd_var)
 
   name <- names(dplyr::select(dplyr::ungroup(data), !!mean_sd_var))
@@ -97,6 +116,13 @@ median_iqr_fxn <- function(data, median_var){
   if (!requireNamespace('rlang', quietly = T)) {
     stop('rlang is required')
   }
+
+  # allow variable postions as well as names
+  if(is.numeric(rlang::enexpr(median_var))){
+    median_var <- rlang::sym(names(dplyr::select(dplyr::ungroup(data),
+                                                  !!mmedian_var)))
+  }
+
   median_var <- rlang::enquo(median_var)
 
   name <- names(dplyr::select(dplyr::ungroup(data), !!median_var))
@@ -108,4 +134,9 @@ median_iqr_fxn <- function(data, median_var){
                    Q75 = quantile(!!median_var, probs = 0.75, na.rm = T))
 }
 
-
+by_cyl <- dplyr::group_by(mtcars, cyl)
+purrr::map(rlang::quos(am), count_fxn, data = by_cyl)
+purrr::map(rlang::quos(vs, am), count_fxn, data = by_cyl)
+purrr::map_dfr(rlang::quos(vs, am), count_fxn, data = by_cyl)
+purrr::map_dfr(rlang::quos(disp, hp), mean_sd_fxn, data = by_cyl)
+purrr::map_dfr(c(1,3:7), mean_sd_fxn, data = by_cyl)
